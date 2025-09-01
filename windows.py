@@ -90,3 +90,55 @@ def launch_alias_command(command_line, verbose=False):
         if verbose:
             print(f"Error launching alias command: {e}")
         return False
+
+def read_default_browser_from_config():
+    config_dir, _ = get_platform_dirs()
+    conf_path = os.path.join(config_dir, "kwebsearch.conf")
+    if not os.path.exists(conf_path):
+        return ""
+    with open(conf_path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line.startswith("default_browser="):
+                return line.split("=", 1)[1].strip().strip('"')
+    return ""
+
+def get_default_browser_command(default_browser_name):
+    default_name = default_browser_name.lower().rstrip(".exe")
+    for browser in installed_browsers.browsers():
+        name = browser.get("name", "").lower()
+        if name == default_name or name.rstrip(".exe") == default_name:
+            path = browser.get("location") or browser.get("path")
+            if path and os.path.isfile(path):
+                return path
+    return default_browser_name
+
+import shlex
+
+def launch_url(url, verbose=False):
+    # Read the configured default browser string from config
+    default_browser_str = read_default_browser_from_config()
+    if not default_browser_str:
+        if verbose:
+            print("[Windows] No default_browser configured, fallback to system default")
+        # Launch URL with system default browser using 'start'
+        subprocess.Popen(f'start "" "{url}"', shell=True)
+        return
+    # Parse the default_browser string into executable and arguments
+    parts = shlex.split(default_browser_str)
+    exec_path_or_name = parts[0]
+    args = parts[1:]
+    # Resolve the real executable path if available
+    exec_path = get_default_browser_command(exec_path_or_name)
+    # Build the command list for subprocess (executable + args + url)
+    cmd_list = [exec_path] + args + [url]
+    if verbose:
+        print(f"[Windows] Launching URL with command list: {cmd_list}")
+    try:
+        # Launch the process without shell=True for safety
+        subprocess.Popen(cmd_list)
+    except Exception as e:
+        if verbose:
+            print(f"[Windows] Error launching URL: {e}")
+        # Fallback: open with system default browser
+        subprocess.Popen(f'start "" "{url}"', shell=True)

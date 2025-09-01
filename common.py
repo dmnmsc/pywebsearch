@@ -281,18 +281,20 @@ r="https://www.reddit.com/search?q=$query" #Reddit
 
     def launch_url(self, url):
         if self.platform:
-            # Delegate full URL opening to platform module (includes allowed browsers and command)
             try:
-                self.platform.launch_url(url, verbose=VERBOSE)
+                if not self.is_linux() and self.default_browser:
+                    # If not Linux, use platform-specific launch (likely Windows)
+                    self.platform.launch_url(url, verbose=VERBOSE)
+                else:
+                    # For Linux and others
+                    self.platform.launch_url(url, verbose=VERBOSE)
                 return
             except Exception as e:
                 if VERBOSE:
                     print(f"❌ Platform-specific launch_url failed: {e}")
-        # Generic fallback with Python stdlib webbrowser
         if VERBOSE:
             print(f"🌐 Fallback: opening URL with webbrowser.open: {url}")
         import webbrowser
-
         webbrowser.open(url, new=2)
 
     def open_with_browser(self, url):
