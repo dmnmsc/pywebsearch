@@ -1,7 +1,9 @@
+#!/usr/bin/env python3
 import os
 import subprocess
 import sys
 import installed_browsers
+import shlex
 from platformdirs import user_config_dir, user_data_dir
 
 
@@ -91,6 +93,7 @@ def launch_alias_command(command_line, verbose=False):
             print(f"Error launching alias command: {e}")
         return False
 
+
 def read_default_browser_from_config():
     config_dir, _ = get_platform_dirs()
     conf_path = os.path.join(config_dir, "kwebsearch.conf")
@@ -103,6 +106,7 @@ def read_default_browser_from_config():
                 return line.split("=", 1)[1].strip().strip('"')
     return ""
 
+
 def get_default_browser_command(default_browser_name):
     default_name = default_browser_name.lower().rstrip(".exe")
     for browser in installed_browsers.browsers():
@@ -113,7 +117,6 @@ def get_default_browser_command(default_browser_name):
                 return path
     return default_browser_name
 
-import shlex
 
 def launch_url(url, verbose=False):
     # Read the configured default browser string from config

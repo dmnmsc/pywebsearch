@@ -26,7 +26,7 @@ from PyQt6.QtWidgets import (
 
 from PyQt6.QtCore import Qt
 
-VERSION = "3.4"
+VERSION = "3.5"
 
 # Setup gettext translations
 base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
