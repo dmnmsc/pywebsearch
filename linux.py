@@ -3,6 +3,7 @@ import os
 import glob
 import shutil
 import subprocess
+import shlex
 from platformdirs import user_config_dir, user_data_dir
 
 
@@ -90,8 +91,6 @@ def launch_url(url, verbose=False):
     default_browser_str = read_default_browser_from_config()
     if default_browser_str:
         # Parse the browser command with arguments
-        import shlex
-
         parts = shlex.split(default_browser_str)
         exec_path_or_name = parts[0]
         args = parts[1:]
