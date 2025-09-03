@@ -3,25 +3,26 @@ import glob
 import os
 import shutil
 import subprocess
-
 from platform_base import PlatformHelper
-
+import re
 
 class LinuxHelper(PlatformHelper):
+    """Platform helper for Linux systems to manage configuration directories,
+    browser detection, and launching browsers or URLs."""
 
     def get_platform_dirs(self):
+        """Get standard config and data directories for Linux."""
         from platformdirs import user_config_dir, user_data_dir
-
         config_dir = user_config_dir(
             "kwebsearch",
             appauthor="dmnmsc",
             ensure_exists=True,
         )
-
         data_dir = user_data_dir("kwebsearch", appauthor="dmnmsc", ensure_exists=True)
         return config_dir, data_dir
 
     def open_config_file(self, path, verbose=False):
+        """Open the configuration file using the default system handler."""
         if verbose:
             subprocess.run(["xdg-open", path])
         else:
@@ -33,6 +34,7 @@ class LinuxHelper(PlatformHelper):
             )
 
     def detect_available_browsers(self):
+        """Detect commonly used browser executables in PATH and add any user-defined extra browsers from configuration."""
         browser_patterns = [
             "firefox*",
             "chromium*",
@@ -41,35 +43,46 @@ class LinuxHelper(PlatformHelper):
             "opera*",
             "vivaldi*",
             "microsoft-edge*",
+            "firefoxpwa"
         ]
-
         detected = set()
-
         for pattern in browser_patterns:
             for path_entry in os.environ.get("PATH", "").split(os.pathsep):
                 for match in glob.glob(os.path.join(path_entry, pattern)):
                     exe = os.path.basename(match)
                     if os.access(match, os.X_OK):
                         detected.add(exe)
-
+        # Detect common text-based browsers
         for text_browser in ["lynx", "w3m", "links"]:
             if shutil.which(text_browser):
                 detected.add(text_browser)
+        # Add user-imported browsers from config if available
+        if hasattr(self, "config"):
+            try:
+                detected.update(self.config.get_extra_browsers())
+            except Exception:
+                pass
         return detected
 
+
     def is_browser_available(self, browser_name):
-        return (
-            browser_name in self.detect_available_browsers()
-            and shutil.which(browser_name) is not None
-        )
+        # If browser_name is detected normally
+        if browser_name in self.detect_available_browsers() and shutil.which(browser_name) is not None:
+            return True
+        # If user defined it explicitly in an alias, allow (user responsibility)
+        if hasattr(self, "aliases") and browser_name in self.aliases:
+            return True
+        # Otherwise, block
+        return False
+
 
     def launch_browser(self, cmd_list, verbose=False):
+        """Launch a browser process with given command list."""
         browser = os.path.basename(cmd_list[0])
         if not self.is_browser_available(browser):
             if verbose:
                 print(f"[Linux] Browser '{browser}' not found or not allowed.")
             return False
-
         try:
             if verbose:
                 print(f"[Linux] Launching browser command: {' '.join(cmd_list)}")
@@ -80,7 +93,16 @@ class LinuxHelper(PlatformHelper):
                 print(f"[Linux] Error launching browser: {e}")
             return False
 
+    def is_browser_name_safe(self, browser_str):
+        """
+        Validate browser name to allow only safe executable names.
+        """
+        import re
+        pattern = r"^[a-zA-Z0-9_.+\-]+$"
+        return bool(re.match(pattern, browser_str))
+
     def launch_default_system_url(self, url, verbose=False):
+        """Fallback launcher using xdg-open for URLs."""
         if verbose:
             print(f"[Linux] Launching default system URL fallback with xdg-open: {url}")
         subprocess.Popen(
@@ -89,3 +111,41 @@ class LinuxHelper(PlatformHelper):
             stderr=subprocess.DEVNULL,
             start_new_session=True,
         )
+
+    def import_extra_browsers(self):
+        """On-demand import and detection of extra browsers via the 'browsers' library.
+
+        This method imports the 'browsers' module only when called to avoid
+        performance cost during startup. Returns a set of executable names
+        that are detected by 'browsers' but not by the manual detect_available_browsers method.
+
+        Returns:
+            Set[str]: Names of extra browser executables detected.
+        """
+        try:
+            import browsers  # Import only when needed to avoid startup overhead.
+        except ImportError:
+            print("[LinuxHelper] 'browsers' module not installed.")
+            return set()
+
+        detected_manual = self.detect_available_browsers()
+
+        def is_browser_name_safe(browser_str):
+            """Validate browser name to allow only safe executable names."""
+            pattern = r"^[a-zA-Z0-9_.+\-]+$"
+            return bool(re.match(pattern, browser_str))
+
+        found = set()
+        for browser in browsers.browsers():
+            exe = (
+                browser.get("browser_type")
+                or browser.get("display_name")
+                or browser.get("name")
+            )
+            if exe and is_browser_name_safe(exe):
+                if exe not in detected_manual:
+                    found.add(exe)
+        return found
+
+
+

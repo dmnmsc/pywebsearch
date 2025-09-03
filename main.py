@@ -96,6 +96,7 @@ class KWebSearchUI(QMainWindow):
 
         commands = {
             "_defaultbrowser": self.settings.set_default_browser,
+            "_importbrowsers": self.settings.import_browsers,
             "_alias": self.settings.show_aliases,
             "_newalias": self.settings.create_alias,
             "_edit": self.settings.edit_alias,
@@ -147,6 +148,8 @@ class KWebSearchUI(QMainWindow):
                 ("---", None),
                 (_("Create backup..."), self.settings.backup_config),
                 (_("Restore backup..."), self.settings.restore_config),
+                ("---", None),
+                (_("Import extra browsers..."), self.settings.import_browsers),
             ],
             "Help": [
                 (_("Help"), self.settings.show_help),
@@ -200,10 +203,32 @@ pywebsearch 'g:cockatoo'
     else:
         from linux import LinuxHelper as platform_mod
 
-    app = QApplication(sys.argv)
+    # Accurate config path for integration with SettingsManager setup:
+    # Use the same logic as SettingsManager for config_dir:
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    # If you want absolute per-user config location, use platformdirs logic:
+    from platformdirs import user_config_dir
+    config_dir = user_config_dir("kwebsearch", appauthor="dmnmsc", ensure_exists=True)
+    conf_path = os.path.join(config_dir, "kwebsearch.conf")
+    from config import ConfigHandler
+    config_handler_instance = ConfigHandler(conf_path)
 
-    kweb_app = KWebSearchApp(platform_module=platform_mod())
+    # Instantiate and attach config to platform helper:
+    platform_helper = platform_mod()
+    platform_helper.config = config_handler_instance
+
+    app = QApplication(sys.argv)
+    kweb_app = KWebSearchApp(platform_module=platform_helper)
     settings = SettingsManager(kweb_app, version=VERSION)
+    main_window = KWebSearchUI(settings)
+    main_window.show()
+    if len(sys.argv) > 1:
+        kweb_app.process_search(
+            " ".join(sys.argv[1:]), history_manager=settings.history
+        )
+        sys.exit(0)
+    sys.exit(app.exec())
+
 
     main_window = KWebSearchUI(settings)
     main_window.show()
