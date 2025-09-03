@@ -20,40 +20,35 @@ class SettingsManager:
         self.kweb_app = kweb_app
         self.dialogs = kweb_app.dialogs
         self.version = version
-
         if self.kweb_app.platform:
             self.config_dir, self.data_dir = self.kweb_app.platform.get_platform_dirs()
         else:
             from platformdirs import user_config_dir, user_data_dir
-
             self.config_dir = user_config_dir(
                 "kwebsearch", appauthor="dmnmsc", ensure_exists=True
             )
             self.data_dir = user_data_dir(
                 "kwebsearch", appauthor="dmnmsc", ensure_exists=True
             )
-
         self.conf_path = os.path.join(self.config_dir, "kwebsearch.conf")
         self.hist_path = os.path.join(self.data_dir, "kwebsearch_history")
         self.backup_dir = os.path.join(self.data_dir, "backup")
 
+        # ¡Crea carpetas y archivos antes de instanciar config y history!
+        self.setup_directories()
+
         self.config = ConfigHandler(self.conf_path)
         self.history = HistoryManager(self.hist_path)
-
         self.kweb_app.config = self.config
         self.kweb_app.history = self.history
         self.kweb_app.conf_path = self.conf_path
         self.kweb_app.hist_path = self.hist_path
         self.kweb_app.backup_dir = self.backup_dir
-
         self.aliases = self.config.get_aliases()
         self.kweb_app.aliases = self.aliases
         self.kweb_app.default_alias = self.config.get_value("default_alias")
         self.kweb_app.default_browser = self.config.get_value("default_browser")
         self.kweb_app.cmd_prefix = self.config.get_value("cmd_prefix") or ">"
-
-        self.setup_directories()
-
         self.alias_manager = AliasManager(
             self.dialogs,
             self.conf_path,
@@ -67,6 +62,7 @@ class SettingsManager:
             self.history,
         )
 
+
     def setup_directories(self):
         os.makedirs(self.config_dir, exist_ok=True)
         os.makedirs(self.data_dir, exist_ok=True)
@@ -76,7 +72,8 @@ class SettingsManager:
             with open(self.hist_path, "a", encoding="utf-8"):
                 pass
         if not os.path.exists(self.conf_path):
-            self.config.create_default_config()
+            ConfigHandler(self.conf_path).create_default_config()
+
 
     def reload_config(self):
         self.config.load()
@@ -172,7 +169,7 @@ class SettingsManager:
         )
         if not backups:
             self.dialogs.show_message_box(
-                _("❌ No backups found."), _("Error"), QMesaBox.Icon.Critical
+                _("❌ No backups found."), _("Error"), QMessageBox.Icon.Critical
             )
             return
         selected_backup_name = self.dialogs.show_list_dialog(
@@ -187,7 +184,7 @@ class SettingsManager:
             self.dialogs.show_message_box(
                 _("❌ Selected backup does not contain valid files."),
                 _("Error"),
-                QMesaBox.Icon.Critical,
+                QMessageBox.Icon.Critical,
             )
             return
         restore_options = [
