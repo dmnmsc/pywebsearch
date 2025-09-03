@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
+
+import os
 import sys
+import random
+import gettext
+
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -8,26 +15,38 @@ from PyQt6.QtWidgets import (
     QLabel,
     QLineEdit,
 )
-from PyQt6.QtGui import QIcon, QAction
-from PyQt6.QtCore import Qt
-from common import KWebSearchApp, icon_path, _
+
+VERSION = 3.6
+
+# Configuración de idiomas y localización
+script_dir = os.path.dirname(os.path.abspath(__file__))
+icon_path = os.path.join(script_dir, "kwebsearch.ico")
+
+locales_dir = os.path.join(script_dir, "locales")
+translation = gettext.translation("kwebsearch", locales_dir, fallback=True)
+translation.install()
+_ = translation.gettext
+
+from search import KWebSearchApp
+from app_settings import SettingsManager
 
 VERBOSE = False
 
 
 class KWebSearchUI(QMainWindow):
-    def __init__(self, app):
+    def __init__(self, settings_manager):
         super().__init__()
-        self.app = app
-        self.setWindowTitle(_("KWebSearch"))
-        self.setWindowIcon(QIcon(icon_path))
-        self.default_browser = ""
-        self.app.dialogs.parent = self
+        self.settings = settings_manager
+        self.app = settings_manager.kweb_app
+        self.setWindowTitle(_("PyWebSearch"))
+        if os.path.exists(icon_path):
+            self.setWindowIcon(QIcon(icon_path))
+        self.settings.dialogs.parent = self
         self.create_menu_bar()
+
         main_widget = QWidget()
         self.setCentralWidget(main_widget)
         main_layout = QVBoxLayout()
-        import random
 
         random_queries = [
             _("Linux"),
@@ -37,12 +56,15 @@ class KWebSearchUI(QMainWindow):
             _("Python"),
             _("stock"),
         ]
+
         example_type = random.choice(["alias", "bang", "url"])
         dynamic_example = ""
+
         if example_type == "alias":
-            random_alias = random.choice(list(self.app.aliases.keys()))
-            random_query = random.choice(random_queries)
-            dynamic_example = f"{random_alias}:{random_query}"
+            if self.settings.aliases:
+                random_alias = random.choice(list(self.settings.aliases.keys()))
+                random_query = random.choice(random_queries)
+                dynamic_example = f"{random_alias}:{random_query}"
         elif example_type == "bang":
             bang_aliases = ["w", "yt", "g", "r"]
             random_bang = random.choice(bang_aliases)
@@ -51,43 +73,49 @@ class KWebSearchUI(QMainWindow):
         elif example_type == "url":
             web_sites = ["github.com", "duckduckgo.com", "en.wikipedia.org"]
             random_site = random.choice(web_sites)
-            dynamic_example = f"{self.app.cmd_prefix}{random_site}"
+            dynamic_example = f"{self.settings.kweb_app.cmd_prefix}{random_site}"
+
         info_text = _(
             "Explore the web your way! Use bangs, alias or open URLs.\n\n"
-        ) + _(f"🟢 !bang   🔎 alias:query   🌐 >url   ✏️ _help   💡 {dynamic_example}")
+        ) + _(f"🟢 !bang 🔎 alias:query 🌐 >url ✏️ _help 💡 {dynamic_example}")
         info_label = QLabel(info_text)
         main_layout.addWidget(info_label)
         main_layout.addStretch()
+
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText(_("🔎 Explore the web your way!"))
         self.search_input.returnPressed.connect(self.handle_input)
         main_layout.addWidget(self.search_input)
+
         main_widget.setLayout(main_layout)
 
     def handle_input(self):
         user_input = self.search_input.text().strip()
         if not user_input:
             return
+
         commands = {
-            "_defaultbrowser": self.app.set_default_browser,
-            "_alias": self.app.show_aliases,
-            "_newalias": self.app.create_alias,
-            "_edit": self.app.edit_alias,
-            "_default": self.app.set_default_alias,
-            "_resetalias": self.app.reset_default_alias,
-            "_history": self.app.view_history,
-            "_clear": self.app.clear_history,
-            "_prefix": self.app.set_prefix,
-            "_backup": self.app.backup_config,
-            "_restore": self.app.restore_config,
-            "_help": self.app.show_help,
-            "_about": self.app.about_info,
+            "_defaultbrowser": self.settings.set_default_browser,
+            "_alias": self.settings.show_aliases,
+            "_newalias": self.settings.create_alias,
+            "_edit": self.settings.edit_alias,
+            "_default": self.settings.set_default_alias,
+            "_resetalias": self.settings.reset_default_alias,
+            "_history": self.settings.view_history,
+            "_clear": self.settings.clear_history,
+            "_prefix": self.settings.set_prefix,
+            "_backup": self.settings.backup_config,
+            "_restore": self.settings.restore_config,
+            "_help": self.settings.show_help,
+            "_about": self.settings.about_info,
             "_exit": self.close,
         }
+
         if user_input in commands:
             commands[user_input]()
         else:
-            self.app.process_search(user_input)
+            self.app.process_search(user_input, history_manager=self.settings.history)
+
         self.search_input.clear()
 
     def keyPressEvent(self, event):
@@ -100,31 +128,32 @@ class KWebSearchUI(QMainWindow):
         menu_bar = self.menuBar()
         menus = {
             "Search": [
-                (_("Select alias..."), self.app.show_aliases),
-                (_("View history"), self.app.view_history),
+                (_("Select alias..."), self.settings.show_aliases),
+                (_("View history"), self.settings.view_history),
                 ("---", None),
-                (_("Clear history"), self.app.clear_history),
-                (_("Open URL..."), self.app.open_url_dialog),
+                (_("Clear history"), self.settings.clear_history),
+                (_("Open URL..."), self.settings.open_url_dialog),
             ],
             "Alias": [
-                (_("Create new alias..."), self.app.create_alias),
-                (_("Edit alias file"), self.app.edit_alias),
+                (_("Create new alias..."), self.settings.create_alias),
+                (_("Edit alias file"), self.settings.edit_alias),
                 ("---", None),
-                (_("Set default alias..."), self.app.set_default_alias),
-                (_("Reset default alias"), self.app.reset_default_alias),
+                (_("Set default alias..."), self.settings.set_default_alias),
+                (_("Reset default alias"), self.settings.reset_default_alias),
             ],
             "Settings": [
-                (_("Set default browser..."), self.app.set_default_browser),
-                (_("Change URL prefix..."), self.app.set_prefix),
+                (_("Set default browser..."), self.settings.set_default_browser),
+                (_("Change URL prefix..."), self.settings.set_prefix),
                 ("---", None),
-                (_("Create backup..."), self.app.backup_config),
-                (_("Restore backup..."), self.app.restore_config),
+                (_("Create backup..."), self.settings.backup_config),
+                (_("Restore backup..."), self.settings.restore_config),
             ],
             "Help": [
-                (_("Help"), self.app.show_help),
-                (_("About..."), self.app.about_info),
+                (_("Help"), self.settings.show_help),
+                (_("About..."), self.settings.about_info),
             ],
         }
+
         for menu_name, actions in menus.items():
             menu = menu_bar.addMenu(_(menu_name))
             for action_name, handler in actions:
@@ -141,17 +170,19 @@ def main():
     if len(sys.argv) > 1 and sys.argv[1] in ("--help", "-h"):
         print(
             _(
-                """kwebsearch - Custom web search tool
+                """pywebsearch - Custom web search tool
 Usage:
-    kwebsearch [options] [query]
+pywebsearch [options] [query]
+
 Options:
-    --help, -h       Show this help and exit.
-    --verbose        Verbose mode (show executed commands).
+--help, -h            Show this help and exit.
+--verbose             Verbose mode (show executed commands).
+
 Examples:
-    kwebsearch --help
-    kwebsearch '!g mechanical keyboard'
-    kwebsearch '>github.com'
-    kwebsearch 'g:cockatoo'
+pywebsearch --help
+pywebsearch '!g mechanical keyboard'
+pywebsearch '>github.com'
+pywebsearch 'g:cockatoo'
 """
             )
         )
@@ -161,25 +192,29 @@ Examples:
         VERBOSE = True
         sys.argv.pop(1)
 
-    # Choose platform module by running platform detection
     current_platform = sys.platform
     if current_platform.startswith("linux"):
-        import linux as platform_mod
+        from linux import LinuxHelper as platform_mod
     elif current_platform == "win32":
-        import windows as platform_mod
+        from windows import WindowsHelper as platform_mod
     else:
-        platform_mod = linux  # fallback generic # noqa: F821
+        from linux import LinuxHelper as platform_mod
 
-    qt_app = QApplication(sys.argv)
-    app_logic = KWebSearchApp(platform_module=platform_mod)
+    app = QApplication(sys.argv)
+
+    kweb_app = KWebSearchApp(platform_module=platform_mod())
+    settings = SettingsManager(kweb_app, version=VERSION)
+
+    main_window = KWebSearchUI(settings)
+    main_window.show()
 
     if len(sys.argv) > 1:
-        app_logic.process_search(" ".join(sys.argv[1:]))
+        kweb_app.process_search(
+            " ".join(sys.argv[1:]), history_manager=settings.history
+        )
         sys.exit(0)
 
-    main_window = KWebSearchUI(app_logic)
-    main_window.show()
-    sys.exit(qt_app.exec())
+    sys.exit(app.exec())
 
 
 if __name__ == "__main__":
