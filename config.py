@@ -45,7 +45,7 @@ class ConfigHandler:
             key, rest = line.split("=", 1)
             key = key.strip()
             # Omit config keys and malformed alias names
-            if key in config_keys or key.startswith(".") or not key[0].isalnum():
+            if key in config_keys:
                 continue
             cmd_part = rest.split("#")[0].strip().strip('"')
             desc_part = ""
