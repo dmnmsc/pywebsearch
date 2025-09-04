@@ -3,8 +3,10 @@ import re
 import subprocess
 import webbrowser
 import gettext
+import shlex
 from urllib.parse import quote_plus
 from dialogs import Dialogs
+
 
 _ = gettext.gettext
 
@@ -57,11 +59,13 @@ class KWebSearchApp:
         url = f"https://duckduckgo.com/?q={quote_plus(query)}"
         self.launch_url(url)
 
+
     def execute_search(self, key, query):
         alias_data = self.aliases.get(key)
         if not alias_data:
             self.duckduckgo_search(query)
             return
+
         cmd_template = alias_data["cmd"].strip('"')
         query_encoded = quote_plus(query)
         cmd = re.sub(r"\$query", query_encoded, cmd_template)
@@ -70,9 +74,21 @@ class KWebSearchApp:
             self.launch_url(cmd)
             return
 
-        cmd_list = cmd.split()
-        browser = cmd_list[0] if cmd_list else ""
+        # Parse command safely into list for platform processing
+        cmd_list = shlex.split(cmd)
+        browser = cmd_list[0].lower() if cmd_list else ""
 
+        # For Windows and Linux, delegate alias execution to platform helper if possible
+        if hasattr(self, "platform") and hasattr(self.platform, "launch_alias_command"):
+            try:
+                # Try using platform helper to launch alias
+                if self.platform.launch_alias_command(cmd, verbose=True):
+                    return
+            except Exception:
+                # If platform launching fails, fallback below
+                pass
+
+        # Fallback for Linux and other platforms without platform helper or on error
         if browser in self.supported_browsers:
             try:
                 subprocess.Popen(
@@ -87,6 +103,7 @@ class KWebSearchApp:
                 self.duckduckgo_search(query)
                 return
 
+        # Final fallback: launch full command as shell string
         try:
             subprocess.Popen(
                 cmd,
@@ -97,6 +114,7 @@ class KWebSearchApp:
             )
         except Exception:
             self.duckduckgo_search(query)
+
 
     def process_search(self, input_str, history_manager=None):
         input_str = input_str.strip()

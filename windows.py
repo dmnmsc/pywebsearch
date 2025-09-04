@@ -292,18 +292,38 @@ class WindowsHelper(PlatformHelper):
         subprocess.Popen(f'start "" "{url}"', shell=True)
 
     def launch_alias_command(self, command_line, verbose=False):
-        """
-        Launch a user-defined alias command on Windows.
-        Uses Windows 'start' command to open the alias command with shell.
-        """
-        cmd_line = f'start "" {command_line}'
+        parts = shlex.split(command_line)
+        if not parts:
+            if verbose:
+                print("[Windows] Alias command empty")
+            return False
+
+        exec_name = parts[0].lower()
+        args = parts[1:]
+
+        # Resuelve la ruta del ejecutable
+        exec_path = self.browser_map.get(exec_name, exec_name)
+
+        cmd_list = [exec_path] + args
+
         if verbose:
-            print(f"[Windows] Launching Windows alias command: {cmd_line}")
+            print(f"[Windows] Launching alias command list: {cmd_list}")
 
         try:
-            subprocess.Popen(cmd_line, shell=True)
+            subprocess.Popen(cmd_list, shell=False)
             return True
         except Exception as e:
             if verbose:
-                print(f"[Windows] Error launching alias command: {e}")
-            return False
+                print(f"[Windows] Error launching alias command as list: {e}")
+            # Fallback con start shell=True
+            try:
+                start_cmd = f'start "" {command_line}'
+                if verbose:
+                    print(f"[Windows] Fallback launching alias command with start: {start_cmd}")
+                subprocess.Popen(start_cmd, shell=True)
+                return True
+            except Exception as e2:
+                if verbose:
+                    print(f"[Windows] Error launching alias command fallback with start: {e2}")
+                return False
+
