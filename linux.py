@@ -43,7 +43,6 @@ class LinuxHelper(PlatformHelper):
             "opera*",
             "vivaldi*",
             "microsoft-edge*",
-            "firefoxpwa"
         ]
         detected = set()
         for pattern in browser_patterns:
@@ -146,6 +145,4 @@ class LinuxHelper(PlatformHelper):
                 if exe not in detected_manual:
                     found.add(exe)
         return found
-
-
-
+        
