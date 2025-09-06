@@ -101,7 +101,7 @@ class AliasManager:
                 _("⚙️ Enter the URL template with $query\n\n")
                 + _("Examples:\n")
                 + "- https://example.com?q=$query\n"
-                + "- firefox https://example.com?q=$query\n"
+                + "- firefox 'https://example.com?q=$query'\n"
                 + "- chromium --incognito 'https://example.com?q=$query'"
             )
             template = self.dialogs.get_input(
