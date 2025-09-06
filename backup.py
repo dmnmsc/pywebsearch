@@ -9,9 +9,9 @@ def backup_files(files, backup_dir):
     """
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     labels_map = {
-        ("kwebsearch.conf",): "aliases",
-        ("kwebsearch_history",): "history",
-        ("kwebsearch.conf", "kwebsearch_history"): "full",
+        ("pywebsearch.conf",): "aliases",
+        ("pywebsearch_history",): "history",
+        ("pywebsearch.conf", "pywebsearch_history"): "full",
     }
     filenames = tuple(sorted(os.path.basename(f) for f in files))
     label = labels_map.get(filenames, "custom")

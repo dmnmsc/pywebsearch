@@ -15,11 +15,11 @@ class LinuxHelper(PlatformHelper):
         """Get standard config and data directories for Linux."""
         from platformdirs import user_config_dir, user_data_dir
         config_dir = user_config_dir(
-            "kwebsearch",
+            "pywebsearch",
             appauthor="dmnmsc",
             ensure_exists=True,
         )
-        data_dir = user_data_dir("kwebsearch", appauthor="dmnmsc", ensure_exists=True)
+        data_dir = user_data_dir("pywebsearch", appauthor="dmnmsc", ensure_exists=True)
         return config_dir, data_dir
 
     def open_config_file(self, path, verbose=False):

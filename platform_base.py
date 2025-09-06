@@ -17,7 +17,7 @@ class PlatformHelper:
 
     def read_default_browser_from_config(self):
         config_dir, _ = self.get_platform_dirs()
-        conf_path = os.path.join(config_dir, "kwebsearch.conf")
+        conf_path = os.path.join(config_dir, "pywebsearch.conf")
 
         if not os.path.exists(conf_path):
             return ""

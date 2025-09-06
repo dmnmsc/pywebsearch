@@ -28,7 +28,7 @@ class Dialogs:
         self.parent = parent
 
     def show_message_box(
-        self, text, title="KWebSearch", icon=QMessageBox.Icon.Information
+        self, text, title="PyWebSearch", icon=QMessageBox.Icon.Information
     ):
         msg = QMessageBox(self.parent)
         msg.setIcon(icon)
@@ -38,7 +38,7 @@ class Dialogs:
         msg.exec()
 
     def show_yes_no_box(
-        self, text, title="KWebSearch", default_button=QMessageBox.StandardButton.No
+        self, text, title="PyWebSearch", default_button=QMessageBox.StandardButton.No
     ):
         reply = QMessageBox.question(
             self.parent,

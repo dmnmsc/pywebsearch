@@ -11,7 +11,7 @@ from dialogs import Dialogs
 _ = gettext.gettext
 
 
-class KWebSearchApp:
+class PyWebSearchApp:
     """
     Core search logic, URL handling, alias execution, and query processing.
     """

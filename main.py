@@ -23,21 +23,21 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 icon_path = os.path.join(script_dir, "pywebsearch.ico")
 
 locales_dir = os.path.join(script_dir, "locales")
-translation = gettext.translation("kwebsearch", locales_dir, fallback=True)
+translation = gettext.translation("pywebsearch", locales_dir, fallback=True)
 translation.install()
 _ = translation.gettext
 
-from search import KWebSearchApp
+from search import PyWebSearchApp
 from app_settings import SettingsManager
 
 VERBOSE = False
 
 
-class KWebSearchUI(QMainWindow):
+class PyWebSearchUI(QMainWindow):
     def __init__(self, settings_manager):
         super().__init__()
         self.settings = settings_manager
-        self.app = settings_manager.kweb_app
+        self.app = settings_manager.pyweb_app
         self.setWindowTitle(_("PyWebSearch"))
         if os.path.exists(icon_path):
             self.setWindowIcon(QIcon(icon_path))
@@ -73,7 +73,7 @@ class KWebSearchUI(QMainWindow):
         elif example_type == "url":
             web_sites = ["github.com", "duckduckgo.com", "en.wikipedia.org"]
             random_site = random.choice(web_sites)
-            dynamic_example = f"{self.settings.kweb_app.cmd_prefix}{random_site}"
+            dynamic_example = f"{self.settings.pyweb_app.cmd_prefix}{random_site}"
 
         info_text = _(
             "Explore the web your way! Use bangs, alias or open URLs.\n\n"
@@ -208,8 +208,8 @@ pywebsearch 'g:cockatoo'
     script_dir = os.path.dirname(os.path.abspath(__file__))
     # If you want absolute per-user config location, use platformdirs logic:
     from platformdirs import user_config_dir
-    config_dir = user_config_dir("kwebsearch", appauthor="dmnmsc", ensure_exists=True)
-    conf_path = os.path.join(config_dir, "kwebsearch.conf")
+    config_dir = user_config_dir("pywebsearch", appauthor="dmnmsc", ensure_exists=True)
+    conf_path = os.path.join(config_dir, "pywebsearch.conf")
     from config import ConfigHandler
     config_handler_instance = ConfigHandler(conf_path)
 
@@ -218,22 +218,22 @@ pywebsearch 'g:cockatoo'
     platform_helper.config = config_handler_instance
 
     app = QApplication(sys.argv)
-    kweb_app = KWebSearchApp(platform_module=platform_helper)
-    settings = SettingsManager(kweb_app, version=VERSION)
-    main_window = KWebSearchUI(settings)
+    pyweb_app = PyWebSearchApp(platform_module=platform_helper)
+    settings = SettingsManager(pyweb_app, version=VERSION)
+    main_window = PyWebSearchUI(settings)
     main_window.show()
     if len(sys.argv) > 1:
-        kweb_app.process_search(
+        pyweb_app.process_search(
             " ".join(sys.argv[1:]), history_manager=settings.history
         )
         sys.exit(0)
     sys.exit(app.exec())
 
-    main_window = KWebSearchUI(settings)
+    main_window = PyWebSearchUI(settings)
     main_window.show()
 
     if len(sys.argv) > 1:
-        kweb_app.process_search(
+        pyweb_app.process_search(
             " ".join(sys.argv[1:]), history_manager=settings.history
         )
         sys.exit(0)

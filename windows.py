@@ -40,16 +40,16 @@ class WindowsHelper(PlatformHelper):
         if self.is_sandboxed_windows():
             base_path = os.path.expandvars(
                 r"%LOCALAPPDATA%\Packages\PythonSoftwareFoundation.Python_8wekyb3d8bbwe"
-                r"\LocalCache\Roaming\dmnmsc\kwebsearch"
+                r"\LocalCache\Roaming\dmnmsc\pywebsearch"
             )
             config_dir = base_path
             data_dir = os.path.join(base_path, "data")
         else:
             config_dir = user_config_dir(
-                "kwebsearch", appauthor="dmnmsc", ensure_exists=True
+                "pywebsearch", appauthor="dmnmsc", ensure_exists=True
             )
             data_dir = user_data_dir(
-                "kwebsearch", appauthor="dmnmsc", ensure_exists=True
+                "pywebsearch", appauthor="dmnmsc", ensure_exists=True
             )
         return config_dir, data_dir
 
@@ -218,7 +218,7 @@ class WindowsHelper(PlatformHelper):
 
     def launch_url(self, url, verbose=False):
         """
-        Launch specified URL using default browser configured in kwebsearch.conf.
+        Launch specified URL using default browser configured in pywebsearch.conf.
         Uses 'browsers.launch' when available, falls back to manual launching or system default.
         """
         try:
@@ -266,13 +266,13 @@ class WindowsHelper(PlatformHelper):
 
     def read_default_browser_from_config(self):
         """
-        Read the 'default_browser' setting from the kwebsearch.conf file.
+        Read the 'default_browser' setting from the pywebsearch.conf file.
         """
         if not self.config:
             return ""
 
         config_dir, _ = self.get_platform_dirs()
-        conf_path = os.path.join(config_dir, "kwebsearch.conf")
+        conf_path = os.path.join(config_dir, "pywebsearch.conf")
 
         if not os.path.exists(conf_path):
             return ""
