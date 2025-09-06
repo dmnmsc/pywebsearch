@@ -210,9 +210,3 @@ It is a copyleft license that enforces source code disclosure when distributing 
 
 For more information about the license, visit the [GNU GPLv3 official site](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
-
----
-
-Thank you for checking out PyWebSearch! Feel free to open issues or contribute.
-
-```
