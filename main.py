@@ -6,7 +6,7 @@ import random
 import gettext
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIcon, QAction
+from PyQt6.QtGui import QIcon, QAction, QShortcut, QKeySequence
 from PyQt6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -88,6 +88,13 @@ class PyWebSearchUI(QMainWindow):
         main_layout.addWidget(self.search_input)
 
         main_widget.setLayout(main_layout)
+
+        shortcut = QShortcut(QKeySequence("F5"), self)
+        shortcut.activated.connect(self.reload_configuration)
+
+    def reload_configuration(self):
+        self.settings.reload_config()
+        self.settings.dialogs.show_message_box("⚡ Configuration reloaded (F5)")
 
     def handle_input(self):
         user_input = self.search_input.text().strip()

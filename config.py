@@ -99,8 +99,8 @@ gl="https://gitlab.com/search?search=+$query" #GitLab
 so="https://stackoverflow.com/search?q=$query" #Stack Overflow
 r="https://www.reddit.com/search?q=$query" #Reddit
 
-#Example of external browser with flags:
-.y="chromium --incognito https://www.youtube.com/results?search_query=$query" #YouTube (incognito)
+#Example of external browser with flags (URL between ' '):
+.y="chromium --incognito 'https://www.youtube.com/results?search_query=$query'" #YouTube (incognito)
 """
                 )
             )
