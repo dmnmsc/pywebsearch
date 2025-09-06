@@ -157,6 +157,7 @@ class PyWebSearchUI(QMainWindow):
                 (_("Restore backup..."), self.settings.restore_config),
                 ("---", None),
                 (_("Import extra browsers..."), self.settings.import_browsers),
+                (_("Reload conf file"), self.reload_configuration),
             ],
             "Help": [
                 (_("Help"), self.settings.show_help),
