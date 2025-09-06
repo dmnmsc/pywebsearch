@@ -246,30 +246,39 @@ class SettingsManager:
 
     def import_browsers(self):
         use_deep_scan = False
-        # On Windows, offer deep scan to the user
+        # On Windows, let the user explicitly choose scan method
         if sys.platform.startswith("win"):
-            use_deep_scan = self.dialogs.show_yes_no_box(
-                "Deeper scan?",
-                "A quick scan for extra browsers will be performed. Do you want to scan exhaustively? (This is slow, only needed if your browser isn't found.)"
+            choice = self.dialogs.show_radio_list_dialog(
+                "Choose browser scan method",
+                "Select the scanning method to find extra browsers:",
+                [
+                    ("pybrowsers scan (better, but may miss some browsers)", True),  # First option
+                    ("installed_browsers scan (just for fallback)", True),  # Second option fallback
+                ],
             )
-        # Use platform helper for actual search
+            if choice == 1:
+                use_deep_scan = False  # pybrowsers scan (faster)
+            elif choice == 2:
+                use_deep_scan = True   # installed_browsers scan (deeper)
+            else:
+                # Cancel or closed dialog
+                return
             new_browsers = self.pyweb_app.platform.import_extra_browsers(use_deep_scan)
         else:
             new_browsers = self.pyweb_app.platform.import_extra_browsers()
+
         if not new_browsers:
             self.dialogs.show_message_box("No new browsers found.")
             return
-        # Allow user to pick which browsers to add (shows all at once here)
+
         chosen = self.dialogs.show_list_dialog(
             "Add browsers",
             "Select browsers to add to your configuration:",
             list(new_browsers)
         )
         if chosen:
-            # Store in config (as comma-separated)
             existing = self.config.get_value("extra_browsers").split(",")
             updated = set(existing) | {chosen}
-            # Re-validate for safety!
             safe_updated = [b for b in updated if self.pyweb_app.platform.is_browser_name_safe(b)]
             self.config.set_value("extra_browsers", ",".join(safe_updated))
             self.dialogs.show_message_box("✅ Browsers added successfully.")
