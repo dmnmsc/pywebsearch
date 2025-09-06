@@ -6,6 +6,7 @@ import subprocess
 from platform_base import PlatformHelper
 import re
 
+
 class LinuxHelper(PlatformHelper):
     """Platform helper for Linux systems to manage configuration directories,
     browser detection, and launching browsers or URLs."""
@@ -63,7 +64,6 @@ class LinuxHelper(PlatformHelper):
                 pass
         return detected
 
-
     def is_browser_available(self, browser_name):
         # If browser_name is detected normally
         if browser_name in self.detect_available_browsers() and shutil.which(browser_name) is not None:
@@ -73,7 +73,6 @@ class LinuxHelper(PlatformHelper):
             return True
         # Otherwise, block
         return False
-
 
     def launch_browser(self, cmd_list, verbose=False):
         """Launch a browser process with given command list."""
@@ -145,4 +144,3 @@ class LinuxHelper(PlatformHelper):
                 if exe not in detected_manual:
                     found.add(exe)
         return found
-        

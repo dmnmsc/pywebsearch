@@ -6,6 +6,7 @@ import shlex
 import re
 from platform_base import PlatformHelper
 
+
 class WindowsHelper(PlatformHelper):
     """
     Platform helper for Windows systems:
@@ -301,7 +302,7 @@ class WindowsHelper(PlatformHelper):
         exec_name = parts[0].lower()
         args = parts[1:]
 
-        # Resuelve la ruta del ejecutable
+        # Resolve exec path
         exec_path = self.browser_map.get(exec_name, exec_name)
 
         cmd_list = [exec_path] + args
@@ -326,4 +327,3 @@ class WindowsHelper(PlatformHelper):
                 if verbose:
                     print(f"[Windows] Error launching alias command fallback with start: {e2}")
                 return False
-

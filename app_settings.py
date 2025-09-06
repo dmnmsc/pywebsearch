@@ -5,7 +5,7 @@ import webbrowser
 import sys
 from datetime import datetime
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QMessageBox
+from PyQt6.QtWidgets import QMessageBox, QFileDialog
 from dialogs import Dialogs
 from config import ConfigHandler
 from history import HistoryManager
@@ -34,7 +34,6 @@ class SettingsManager:
         self.hist_path = os.path.join(self.data_dir, "kwebsearch_history")
         self.backup_dir = os.path.join(self.data_dir, "backup")
 
-        # ¡Crea carpetas y archivos antes de instanciar config y history!
         self.setup_directories()
 
         self.config = ConfigHandler(self.conf_path)
@@ -62,7 +61,6 @@ class SettingsManager:
             self.history,
         )
 
-
     def setup_directories(self):
         os.makedirs(self.config_dir, exist_ok=True)
         os.makedirs(self.data_dir, exist_ok=True)
@@ -73,7 +71,7 @@ class SettingsManager:
                 pass
         if not os.path.exists(self.conf_path):
             ConfigHandler(self.conf_path).create_default_config()
-
+            self.dialogs.show_config_created(self.conf_path)
 
     def reload_config(self):
         self.config.load()
@@ -158,59 +156,62 @@ class SettingsManager:
         self.dialogs.show_message_box(_("✅ Aliases and history exported in:\n") + dest)
 
     def restore_config(self):
+        backups_dir = self.kweb_app.backup_dir
         backups = sorted(
             (
                 d
-                for d in os.listdir(self.kweb_app.backup_dir)
+                for d in os.listdir(backups_dir)
                 if d.startswith("20")
-                and os.path.isdir(os.path.join(self.kweb_app.backup_dir, d))
+                and os.path.isdir(os.path.join(backups_dir, d))
             ),
             reverse=True,
         )
         if not backups:
             self.dialogs.show_message_box(
-                _("❌ No backups found."), _("Error"), QMessageBox.Icon.Critical
+                ("❌ No backups found."), _("Error"), QMessageBox.Icon.Critical
             )
             return
-        selected_backup_name = self.dialogs.show_list_dialog(
-            _("Restore configuration"), _("Select backup to restore:"), backups
+
+        selected_files, _ignored = QFileDialog.getOpenFileNames(
+            self.dialogs.parent,
+            _("Select backup files to restore"),
+            backups_dir,
+            "Backup files (kwebsearch.conf kwebsearch_history);;All Files (*)",
+            options=QFileDialog.Option.DontUseNativeDialog | QFileDialog.Option.ReadOnly,
         )
-        if not selected_backup_name:
+        if not selected_files:
             return
-        full_path = os.path.join(self.kweb_app.backup_dir, selected_backup_name)
-        has_conf = os.path.exists(os.path.join(full_path, "kwebsearch.conf"))
-        has_hist = os.path.exists(os.path.join(full_path, "kwebsearch_history"))
-        if not has_conf and not has_hist:
+
+        restore_conf = False
+        restore_hist = False
+
+        for file_path in selected_files:
+            base_name = os.path.basename(file_path)
+            if base_name == "kwebsearch.conf":
+                restore_conf = True
+                conf_path = file_path
+            elif base_name == "kwebsearch_history":
+                restore_hist = True
+                hist_path = file_path
+
+        if not (restore_conf or restore_hist):
             self.dialogs.show_message_box(
-                _("❌ Selected backup does not contain valid files."),
-                _("Error"),
-                QMessageBox.Icon.Critical,
+                _("❌ No valid backup files selected."), _("Error"), QMessageBox.Icon.Critical
             )
             return
-        restore_options = [
-            (_("⚙️ Aliases (kwebsearch.conf)"), has_conf),
-            (_("🕘 History (kwebsearch_history)"), has_hist),
-        ]
-        if has_conf and has_hist:
-            restore_options.append((_("📦 Both"), True))
-        selection = self.dialogs.show_radio_list_dialog(
-            _("Content detected"),
-            _("Choose what to restore from backup:"),
-            restore_options,
-        )
-        if not selection:
-            return
-        if selection == 1 and has_conf:
-            restore_files(full_path, [self.kweb_app.conf_path])
-            self.dialogs.show_message_box(_("✅ Aliases restored successfully"))
-        elif selection == 2 and has_hist:
-            restore_files(full_path, [self.kweb_app.hist_path])
-            self.dialogs.show_message_box(_("✅ History restored successfully"))
-        elif selection == 3 and has_conf and has_hist:
-            restore_files(full_path, [self.kweb_app.conf_path, self.kweb_app.hist_path])
-            self.dialogs.show_message_box(
-                _("✅ Aliases and history restored successfully")
-            )
+
+        if restore_conf:
+            restore_files(os.path.dirname(conf_path), [self.kweb_app.conf_path])
+        if restore_hist:
+            restore_files(os.path.dirname(hist_path), [self.kweb_app.hist_path])
+
+        messages = []
+        if restore_conf:
+            messages.append(_("✅ Aliases restored successfully"))
+        if restore_hist:
+            messages.append(_("✅ History restored successfully"))
+
+        self.dialogs.show_message_box("\n".join(messages))
 
     def view_history(self):
         if not os.path.exists(self.hist_path) or os.path.getsize(self.hist_path) == 0:

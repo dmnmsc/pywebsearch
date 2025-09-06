@@ -18,9 +18,9 @@ from PyQt6.QtWidgets import (
 
 VERSION = 3.6
 
-# Configuración de idiomas y localización
+# Locale language
 script_dir = os.path.dirname(os.path.abspath(__file__))
-icon_path = os.path.join(script_dir, "kwebsearch.ico")
+icon_path = os.path.join(script_dir, "pywebsearch.ico")
 
 locales_dir = os.path.join(script_dir, "locales")
 translation = gettext.translation("kwebsearch", locales_dir, fallback=True)
@@ -77,7 +77,7 @@ class KWebSearchUI(QMainWindow):
 
         info_text = _(
             "Explore the web your way! Use bangs, alias or open URLs.\n\n"
-        ) + _(f"🟢 !bang 🔎 alias:query 🌐 >url ✏️ _help 💡 {dynamic_example}")
+        ) + _(f"🟢 !bang   🔎 alias:query   🌐 >url   ✏️ _help   💡 {dynamic_example}")
         info_label = QLabel(info_text)
         main_layout.addWidget(info_label)
         main_layout.addStretch()
@@ -228,7 +228,6 @@ pywebsearch 'g:cockatoo'
         )
         sys.exit(0)
     sys.exit(app.exec())
-
 
     main_window = KWebSearchUI(settings)
     main_window.show()

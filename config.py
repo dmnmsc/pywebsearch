@@ -1,4 +1,7 @@
 import os
+import gettext
+
+_ = gettext.gettext
 
 
 class ConfigHandler:
@@ -99,7 +102,5 @@ r="https://www.reddit.com/search?q=$query" #Reddit
 #Example of external browser with flags:
 .y="chromium --incognito https://www.youtube.com/results?search_query=$query" #YouTube (incognito)
 """
+                )
             )
-        )
-
-

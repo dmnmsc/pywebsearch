@@ -59,7 +59,6 @@ class KWebSearchApp:
         url = f"https://duckduckgo.com/?q={quote_plus(query)}"
         self.launch_url(url)
 
-
     def execute_search(self, key, query):
         alias_data = self.aliases.get(key)
         if not alias_data:
@@ -115,7 +114,6 @@ class KWebSearchApp:
         except Exception:
             self.duckduckgo_search(query)
 
-
     def process_search(self, input_str, history_manager=None):
         input_str = input_str.strip()
         if not input_str:
@@ -125,7 +123,7 @@ class KWebSearchApp:
             history_manager.add_entry(input_str)
 
         if input_str.startswith(self.cmd_prefix):
-            self.open_direct_url(input_str[len(self.cmd_prefix) :])
+            self.open_direct_url(input_str[len(self.cmd_prefix):])
         elif ":" in input_str:
             key, query = input_str.split(":", 1)
             key = key.strip()

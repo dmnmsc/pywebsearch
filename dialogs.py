@@ -9,10 +9,16 @@ from PyQt6.QtWidgets import (
     QLineEdit,
     QListWidget,
     QListWidgetItem,
+    QPushButton,
     QMessageBox,
     QRadioButton,
     QVBoxLayout,
+    QFileDialog,
 )
+from PyQt6.QtGui import QDesktopServices
+from PyQt6.QtCore import QUrl
+import os
+
 
 _ = gettext.gettext
 
@@ -149,3 +155,68 @@ class Dialogs:
                 if radio.isChecked():
                     return i + 1
         return None
+
+    def show_autocomplete_combo_dialog(self, title, label, items):
+        dialog = QDialog(self.parent)
+        dialog.setWindowTitle(title)
+        layout = QVBoxLayout()
+        layout.addWidget(QLabel(label))
+
+        combo = QComboBox()
+        combo.setEditable(True)
+        combo.setInsertPolicy(QComboBox.InsertPolicy.NoInsert)
+        combo.setCompleter(combo.completer())
+        combo.addItems(items)
+        layout.addWidget(combo)
+
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
+        buttons.accepted.connect(dialog.accept)
+        buttons.rejected.connect(dialog.reject)
+        layout.addWidget(buttons)
+
+        dialog.setLayout(layout)
+        dialog.resize(400, 100)
+
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            return combo.currentText()
+        return None
+
+    def select_backup_folder(self, start_dir):
+        dialog = QFileDialog(self.parent)
+        dialog.setWindowTitle("Select Backup Folder")
+        dialog.setDirectory(start_dir)
+        dialog.setFileMode(QFileDialog.FileMode.Directory)
+        dialog.setOption(QFileDialog.Option.ShowDirsOnly, True)
+        if dialog.exec():
+            selected_folders = dialog.selectedFiles()
+            if selected_folders:
+                return selected_folders[0]
+        return None
+
+    def show_config_created(self, config_path):
+        msg_box = QMessageBox(self.parent)
+        msg_box.setIcon(QMessageBox.Icon.Information)
+        msg_box.setWindowTitle(_("Configuration created"))
+        msg_box.setText(_("Config file created at:\n") + config_path)
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Close)
+
+        btn_open_file = QPushButton(_("📝 Open File"))
+        btn_open_folder = QPushButton(_("📁 Open Folder"))
+        msg_box.addButton(btn_open_file, QMessageBox.ButtonRole.ActionRole)
+        msg_box.addButton(btn_open_folder, QMessageBox.ButtonRole.ActionRole)
+
+        def open_file():
+            QDesktopServices.openUrl(QUrl.fromLocalFile(config_path))
+            msg_box.close()
+
+        def open_folder():
+            folder = os.path.dirname(config_path)
+            QDesktopServices.openUrl(QUrl.fromLocalFile(folder))
+            msg_box.close()
+
+        btn_open_file.clicked.connect(open_file)
+        btn_open_folder.clicked.connect(open_folder)
+
+        msg_box.exec()

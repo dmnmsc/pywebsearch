@@ -1,5 +1,8 @@
 import re
+import gettext
 from PyQt6.QtWidgets import QMessageBox
+
+_ = gettext.gettext
 
 
 class AliasManager:
@@ -41,7 +44,7 @@ class AliasManager:
             options.append(f"{desc} ({key})")
             keys.append(key)
             descs.append(desc)
-        sel = self.dialogs.show_list_dialog(
+        sel = self.dialogs.show_searchable_list_dialog(
             _("Available aliases"), _("Select an alias:"), options
         )
         if sel is None:
@@ -142,7 +145,7 @@ class AliasManager:
         keys = list(self.aliases.keys())
         options.append(_("🧹 Reset default alias (DuckDuckGo)"))
         keys.append("reset")
-        sel = self.dialogs.show_list_dialog(
+        sel = self.dialogs.show_searchable_list_dialog(
             _("Default alias"), _("Select a default alias:"), options
         )
         if sel is None:
