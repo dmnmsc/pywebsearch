@@ -74,8 +74,8 @@ class SettingsManager:
             self.dialogs.show_config_created(self.conf_path)
 
     def reload_config(self):
-        self.config.load()  # Recarga archivo de config desde disco
-        self.aliases = self.config.get_aliases()  # Actualizar aliases en SettingsManager
+        self.config.load()  
+        self.aliases = self.config.get_aliases()  
         self.pyweb_app.aliases = self.aliases
         self.pyweb_app.default_alias = self.config.get_value("default_alias")
         self.pyweb_app.default_browser = self.config.get_value("default_browser")
