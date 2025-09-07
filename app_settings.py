@@ -1,12 +1,10 @@
 import os
 import gettext
-import re
 import webbrowser
 import sys
 from datetime import datetime
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QMessageBox, QFileDialog
-from dialogs import Dialogs
 from config import ConfigHandler
 from history import HistoryManager
 from backup import backup_files, restore_files
@@ -74,8 +72,8 @@ class SettingsManager:
             self.dialogs.show_config_created(self.conf_path)
 
     def reload_config(self):
-        self.config.load()  
-        self.aliases = self.config.get_aliases()  
+        self.config.load()
+        self.aliases = self.config.get_aliases()
         self.pyweb_app.aliases = self.aliases
         self.pyweb_app.default_alias = self.config.get_value("default_alias")
         self.pyweb_app.default_browser = self.config.get_value("default_browser")
@@ -154,8 +152,14 @@ class SettingsManager:
             _("🕘 History (pywebsearch_history)"): [self.pyweb_app.hist_path],
             _("📦 Both"): [self.pyweb_app.conf_path, self.pyweb_app.hist_path],
         }
+        messages_map = {
+            _("⚙️ Aliases (pywebsearch.conf)"): "✅ Aliases exported at:",
+            _("🕘 History (pywebsearch_history)"): "✅ History exported at:",
+            _("📦 Both"): "✅ Aliases and history exported at:",
+        }
         dest = backup_files(files_map[selected_option], self.pyweb_app.backup_dir)
-        self.dialogs.show_message_box(_("✅ Aliases and history exported in:\n") + dest)
+        message = messages_map.get(selected_option, "✅ Backup created at:")
+        self.dialogs.show_backup_created(dest, message)
 
     def restore_config(self):
         backups_dir = self.pyweb_app.backup_dir
