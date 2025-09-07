@@ -9,10 +9,9 @@ import re
 
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-# PKGBUILD
+
 ICON_INSTALLED = "/usr/share/icons/hicolor/48x48/apps/pywebsearch.png"
 
-# Local source
 ICON_LOCAL = os.path.join(script_dir, "resources", "pywebsearch.png")
 
 
@@ -22,7 +21,6 @@ def get_icon() -> QIcon:
     elif os.path.exists(ICON_LOCAL):
         return QIcon(ICON_LOCAL)
     else:
-        print("Warning: icon not found")
         return QIcon()
 
 

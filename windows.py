@@ -9,11 +9,14 @@ from PyQt6.QtGui import QIcon
 
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-ICON_PATH = os.path.join(script_dir, "resources", "pywebsearch.png")
+ICON_LOCAL = os.path.join(script_dir, "resources", "pywebsearch.png")
 
 
 def get_icon():
-    return QIcon(ICON_PATH)
+    if os.path.exists(ICON_LOCAL):
+        return QIcon(ICON_LOCAL)
+    else:
+        return QIcon()  # No Icon
 
 
 class WindowsHelper(PlatformHelper):

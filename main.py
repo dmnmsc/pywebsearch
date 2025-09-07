@@ -22,10 +22,15 @@ from PyQt6.QtWidgets import (
 VERSION = 3.6
 
 # Icon
-if sys.platform.startswith("win"):
-    from windows import get_icon
-else:
+if sys.platform.startswith("linux"):
     from linux import get_icon
+else:
+    from windows import get_icon
+
+
+def load_icon():
+    return get_icon()
+
 
 # Locale language
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -34,6 +39,7 @@ locales_dir = os.path.join(script_dir, "locales")
 translation = gettext.translation("pywebsearch", locales_dir, fallback=True)
 translation.install()
 _ = translation.gettext
+
 
 VERBOSE = False
 
@@ -44,7 +50,7 @@ class PyWebSearchUI(QMainWindow):
         self.settings = settings_manager
         self.app = settings_manager.pyweb_app
         self.setWindowTitle(_("PyWebSearch"))
-        self.setWindowIcon(get_icon())
+        self.setWindowIcon(load_icon())
         self.settings.dialogs.parent = self
         self.create_menu_bar()
 
