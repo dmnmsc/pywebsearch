@@ -1,3 +1,4 @@
+import os
 import gettext
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtWidgets import (
@@ -236,4 +237,24 @@ class Dialogs:
             "Backup Created",
             message,
             buttons_callbacks=[("📁 Open Folder", open_folder)]
+        )
+
+    def show_config_created(self, config_path):
+        message = _("📋 Config file created at:\n") + config_path
+
+        def open_file():
+            QDesktopServices.openUrl(QUrl.fromLocalFile(config_path))
+
+        def open_folder():
+            folder_url = QUrl.fromLocalFile(os.path.dirname(config_path))
+            QDesktopServices.openUrl(folder_url)
+
+        self.show_custom_dialog(
+            _("Configuration created"),
+            message,
+            buttons_callbacks=[
+                (_("📝 Open File"), open_file),
+                (_("📁 Open Folder"), open_folder),
+            ],
+            rich_text=False,
         )
