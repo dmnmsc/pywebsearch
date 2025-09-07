@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=PyWebSearch
+Exec=pywebsearch
+Icon=pywebsearch
+Categories=Utility;Internet;
