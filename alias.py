@@ -65,6 +65,7 @@ class AliasManager:
         key = ""
         desc = ""
         template = ""
+
         while True:
             key = self.dialogs.get_input(
                 _("Alias key (no spaces or parentheses):"), _("🔑 Alias key:"), text=key
@@ -78,12 +79,11 @@ class AliasManager:
                     if not key_sanitized
                     else f"❌ {_('The key')} '{key_sanitized}' {_('already exists in the alias file.')}"
                 )
-                self.dialogs.show_message_box(
-                    msg, _("Error"), QMessageBox.Icon.Critical
-                )
+                self.dialogs.show_message_box(msg, _("Error"), QMessageBox.Icon.Critical)
                 continue
             key = key_sanitized
             break
+
         while True:
             desc = self.dialogs.get_input(
                 _(f"Description for '{key}':"), _("📘 Description:"), text=desc
@@ -112,23 +112,48 @@ class AliasManager:
             )
             if template is None:
                 return
-            if not template or "$query" not in template:
-                msg = (
-                    _("❌ Template cannot be empty.")
-                    if not template
-                    else _("❌ Missing placeholder $query in the template.")
-                )
+            template_stripped = template.strip()
+
+            if not template_stripped:
                 self.dialogs.show_message_box(
-                    msg, _("Error"), QMessageBox.Icon.Critical
+                    _("❌ Template cannot be empty."), _("Error"), QMessageBox.Icon.Critical
                 )
                 continue
+
+            if "$query" not in template:
+                self.dialogs.show_message_box(
+                    _("❌ Missing placeholder $query in the template."),
+                    _("Error"),
+                    QMessageBox.Icon.Critical,
+                )
+                continue
+
+            if not (template_stripped.startswith("http://") or template_stripped.startswith("https://")):
+                match = re.search(r"'([^']*)'", template)
+                if not match:
+                    self.dialogs.show_message_box(
+                        _("❌ The URL must be enclosed in single quotes\n➡️ chromium 'https://example.com/$query'"),
+                        _("Error"),
+                        QMessageBox.Icon.Critical,
+                    )
+                    continue
+                url_inside = match.group(1)
+                if "$query" not in url_inside or not (url_inside.startswith("http://") or url_inside.startswith("https://")):
+                    self.dialogs.show_message_box(
+                        _("❌ The URL must start with http:// or https:// and contain $query\n➡️ chromium 'https://example.com/$query'"),
+                        _("Error"),
+                        QMessageBox.Icon.Critical,
+                    )
+                    continue
+
             break
+
         if self.dialogs.show_yes_no_box(
             _(f'🔍 Preview:\n\n{key}="{template}" # {desc}\n\nSave this alias?'),
             default_button=QMessageBox.StandardButton.Yes,
         ):
             with open(self.conf_path, "a", encoding="utf-8") as f:
-                f.write(f'\n{key}="{template}" # {desc}\n')
+                f.write(f'{key}="{template}" # {desc}\n')
             self.dialogs.show_message_box(_("✅ Alias saved successfully: ") + key)
             self.reload_config()
 
