@@ -88,7 +88,9 @@ class AliasManager:
             desc = self.dialogs.get_input(
                 _(f"Description for '{key}':"), _("📘 Description:"), text=desc
             )
-            if not desc:
+            if desc is None:
+                return
+            if not desc.strip():
                 self.dialogs.show_message_box(
                     _("❌ Description cannot be empty."),
                     _("Error"),
@@ -96,6 +98,7 @@ class AliasManager:
                 )
                 continue
             break
+
         while True:
             template_text = (
                 _("⚙️ Enter the URL template with $query\n\n")
@@ -124,7 +127,7 @@ class AliasManager:
             _(f'🔍 Preview:\n\n{key}="{template}" # {desc}\n\nSave this alias?'),
             default_button=QMessageBox.StandardButton.Yes,
         ):
-            with open(self.conf_path, "a", encoding="utf-8") as f:  # antes self.conf
+            with open(self.conf_path, "a", encoding="utf-8") as f:
                 f.write(f'\n{key}="{template}" # {desc}\n')
             self.dialogs.show_message_box(_("✅ Alias saved successfully: ") + key)
             self.reload_config()

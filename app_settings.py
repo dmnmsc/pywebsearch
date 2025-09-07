@@ -74,12 +74,14 @@ class SettingsManager:
             self.dialogs.show_config_created(self.conf_path)
 
     def reload_config(self):
-        self.config.load()
-        self.aliases = self.config.get_aliases()
+        self.config.load()  # Recarga archivo de config desde disco
+        self.aliases = self.config.get_aliases()  # Actualizar aliases en SettingsManager
         self.pyweb_app.aliases = self.aliases
         self.pyweb_app.default_alias = self.config.get_value("default_alias")
         self.pyweb_app.default_browser = self.config.get_value("default_browser")
         self.pyweb_app.cmd_prefix = self.config.get_value("cmd_prefix") or ">"
+        self.pyweb_app.reload_config()
+        self.alias_manager.aliases = self.aliases
 
     def show_aliases(self):
         self.alias_manager.show_aliases()
