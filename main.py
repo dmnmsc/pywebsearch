@@ -5,8 +5,11 @@ import sys
 import random
 import gettext
 
+from search import PyWebSearchApp
+from app_settings import SettingsManager
+
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIcon, QAction, QShortcut, QKeySequence
+from PyQt6.QtGui import QAction, QShortcut, QKeySequence
 from PyQt6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -18,17 +21,19 @@ from PyQt6.QtWidgets import (
 
 VERSION = 3.6
 
+# Icon
+if sys.platform.startswith("win"):
+    from windows import get_icon
+else:
+    from linux import get_icon
+
 # Locale language
 script_dir = os.path.dirname(os.path.abspath(__file__))
-icon_path = os.path.join(script_dir, "pywebsearch.ico")
 
 locales_dir = os.path.join(script_dir, "locales")
 translation = gettext.translation("pywebsearch", locales_dir, fallback=True)
 translation.install()
 _ = translation.gettext
-
-from search import PyWebSearchApp
-from app_settings import SettingsManager
 
 VERBOSE = False
 
@@ -39,8 +44,7 @@ class PyWebSearchUI(QMainWindow):
         self.settings = settings_manager
         self.app = settings_manager.pyweb_app
         self.setWindowTitle(_("PyWebSearch"))
-        if os.path.exists(icon_path):
-            self.setWindowIcon(QIcon(icon_path))
+        self.setWindowIcon(get_icon())
         self.settings.dialogs.parent = self
         self.create_menu_bar()
 

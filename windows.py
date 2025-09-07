@@ -5,6 +5,15 @@ import sys
 import shlex
 import re
 from platform_base import PlatformHelper
+from PyQt6.QtGui import QIcon
+
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+ICON_PATH = os.path.join(script_dir, "resources", "pywebsearch.png")
+
+
+def get_icon():
+    return QIcon(ICON_PATH)
 
 
 class WindowsHelper(PlatformHelper):
