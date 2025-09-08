@@ -9,7 +9,7 @@ from PyQt6.QtGui import QIcon
 
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-ICON_LOCAL = os.path.join(script_dir, "resources", "pywebsearch.png")
+ICON_LOCAL = os.path.join(script_dir, "resources", "pywebsearch.ico")
 
 
 def get_icon():
