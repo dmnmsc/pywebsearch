@@ -337,24 +337,20 @@ class SettingsManager:
             f"""<b>🛠️ pywebsearch - Custom web search tool</b><br>
     Version: <b>{self.version}</b><br>
     Author: <i>dmnmsc</i><br>
-    Last updated: <u>{datetime.now().strftime("%Y-%m-%d")}</u><br>
-    <br>
+    Last updated: <u>{datetime.now().strftime("%Y-%m-%d")}</u><br><br>
     📌 <b>What is pywebsearch?</b><br>
-    A simple and practical tool to perform fast searches and open web pages using customizable aliases and !bangs, with a user-friendly GUI.<br>
-    <br>
+    A simple and practical tool to perform fast searches and open web pages using customizable aliases and !bangs, with a user-friendly GUI.<br><br>
     ⭐ <b>Main features:</b><br>
     • Quick alias searches<br>
     • <i>DuckDuckGo !bangs</i> integration for versatile searches<br>
-    • Direct URL opening</b> with configurable prefix<br>
+    • Direct URL opening with configurable prefix<br>
     • Local search history auto saved<br>
-    • Configuration and history backup and restore<br>
-    <br>
+    • Configuration and history backup and restore<br><br>
     📂 <b>Main files:</b><br>
     • <b>Alias configuration:</b><br>
-        {self.conf_path}<br>
+    <a href="file://{self.conf_path}">{self.conf_path}</a><br><br>
     • <b>Search history:</b><br>
-        {self.hist_path}<br>
-    <br>
+    <a href="file://{self.hist_path}">{self.hist_path}</a><br><br>
     🔗 <b>More info and source code:</b><br>
     <a href="https://github.com/dmnmsc/pywebsearch">https://github.com/dmnmsc/pywebsearch</a>
     """
