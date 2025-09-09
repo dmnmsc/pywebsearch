@@ -146,32 +146,32 @@ class PyWebSearchUI(QMainWindow):
         menu_bar = self.menuBar()
         menus = {
             "Search": [
-                (_("Select alias..."), self.settings.show_aliases),
-                (_("View history"), self.settings.view_history),
+                (_("📗 Select alias..."), self.settings.show_aliases),
+                (_("🕘 View history"), self.settings.view_history),
                 ("---", None),
-                (_("Clear history"), self.settings.clear_history),
-                (_("Open URL..."), self.settings.open_url_dialog),
+                (_("🧹 Clear history"), self.settings.clear_history),
+                (_("🌐 Open URL..."), self.settings.open_url_dialog),
             ],
             "Alias": [
-                (_("Create new alias..."), self.settings.create_alias),
-                (_("Edit alias file"), self.settings.edit_alias),
+                (_("🆕 Create new alias..."), self.settings.create_alias),
+                (_("✏️ Edit alias file"), self.settings.edit_alias),
                 ("---", None),
-                (_("Set default alias..."), self.settings.set_default_alias),
-                (_("Reset default alias"), self.settings.reset_default_alias),
+                (_("🟢 Set default alias..."), self.settings.set_default_alias),
+                (_("🔄 Reset default alias"), self.settings.reset_default_alias),
             ],
             "Settings": [
-                (_("Set default browser..."), self.settings.set_default_browser),
-                (_("Change URL prefix..."), self.settings.set_prefix),
+                (_("🔵 Set default browser..."), self.settings.set_default_browser),
+                (_("🔗 Change URL prefix..."), self.settings.set_prefix),
                 ("---", None),
-                (_("Create backup..."), self.settings.backup_config),
-                (_("Restore backup..."), self.settings.restore_config),
+                (_("📤 Create backup..."), self.settings.backup_config),
+                (_("📥 Restore backup..."), self.settings.restore_config),
                 ("---", None),
-                (_("Import extra browsers..."), self.settings.import_browsers),
-                (_("Reload conf file"), self.reload_configuration),
+                (_("🚀 Import extra browsers..."), self.settings.import_browsers),
+                (_("🔃 Reload conf file"), self.reload_configuration),
             ],
             "Help": [
-                (_("Help"), self.settings.show_help),
-                (_("About..."), self.settings.about_info),
+                (_("❓ Help"), self.settings.show_help),
+                (_("ℹ️ About..."), self.settings.about_info),
             ],
         }
 
