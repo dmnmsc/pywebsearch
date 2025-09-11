@@ -8,9 +8,7 @@ setup(
     url="https://github.com/dmnmsc/pywebsearch",
     license="GPL-3.0",
     packages=find_packages(),
-    py_modules=[
-        "main", "app_settings", "search", "alias", "dialogs", "history", "backup", "config", "platform_base", "windows", "linux"
-    ],
+
     install_requires=[
         "pybrowsers",
         "PyQt6",
@@ -21,7 +19,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "pywebsearch = main:main"
+            "pywebsearch = pywebsearch.main:main"
         ]
     },
     include_package_data=True,
