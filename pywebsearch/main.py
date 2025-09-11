@@ -7,8 +7,8 @@ import gettext
 
 from platformdirs import user_config_dir
 
-from search import PyWebSearchApp
-from app_settings import SettingsManager
+from pywebsearch.search import PyWebSearchApp
+from pywebsearch.app_settings import SettingsManager
 
 
 from PyQt6.QtCore import Qt
@@ -26,9 +26,9 @@ VERSION = 3.6
 
 # Icon
 if sys.platform.startswith("linux"):
-    from linux import get_icon
+    from pywebsearch.linux import get_icon
 else:
-    from windows import get_icon
+    from pywebsearch.windows import get_icon
 
 
 def load_icon():
@@ -225,16 +225,16 @@ pywebsearch 'g:cockatoo'
 
     current_platform = sys.platform
     if current_platform.startswith("linux"):
-        from linux import LinuxHelper as platform_mod
+        from pywebsearch.linux import LinuxHelper as platform_mod
     elif current_platform == "win32":
-        from windows import WindowsHelper as platform_mod
+        from pywebsearch.windows import WindowsHelper as platform_mod
     else:
-        from linux import LinuxHelper as platform_mod
+        from pywebsearch.linux import LinuxHelper as platform_mod
 
     # User config path determined via platformdirs for cross-platform compatibility
     config_dir = user_config_dir("pywebsearch", appauthor="dmnmsc", ensure_exists=True)
     conf_path = os.path.join(config_dir, "pywebsearch.conf")
-    from config import ConfigHandler
+    from pywebsearch.config import ConfigHandler
     config_handler_instance = ConfigHandler(conf_path)
 
     # Instantiate and attach config to platform helper:

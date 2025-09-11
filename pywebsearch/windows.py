@@ -4,7 +4,7 @@ import subprocess
 import sys
 import shlex
 import re
-from platform_base import PlatformHelper
+from pywebsearch.platform_base import PlatformHelper
 from PyQt6.QtGui import QIcon
 
 

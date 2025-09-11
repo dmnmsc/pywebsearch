@@ -5,7 +5,7 @@ import webbrowser
 import gettext
 import shlex
 from urllib.parse import quote_plus
-from dialogs import Dialogs
+from pywebsearch.dialogs import Dialogs
 
 
 _ = gettext.gettext

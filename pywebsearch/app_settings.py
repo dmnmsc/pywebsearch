@@ -5,10 +5,10 @@ import sys
 from datetime import datetime
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QMessageBox, QFileDialog
-from config import ConfigHandler
-from history import HistoryManager
-from backup import backup_files, restore_files
-from alias import AliasManager
+from pywebsearch.config import ConfigHandler
+from pywebsearch.history import HistoryManager
+from pywebsearch.backup import backup_files, restore_files
+from pywebsearch.alias import AliasManager
 
 _ = gettext.gettext
 

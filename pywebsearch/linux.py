@@ -3,7 +3,7 @@ import glob
 import os
 import shutil
 import subprocess
-from platform_base import PlatformHelper
+from pywebsearch.platform_base import PlatformHelper
 from PyQt6.QtGui import QIcon
 import re
 
