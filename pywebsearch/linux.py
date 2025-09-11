@@ -3,7 +3,7 @@ import glob
 import os
 import shutil
 import subprocess
-from platform_base import PlatformHelper
+from pywebsearch.platformbase import PlatformHelper
 from PyQt6.QtGui import QIcon
 import re
 
@@ -30,7 +30,7 @@ class LinuxHelper(PlatformHelper):
 
     def get_platform_dirs(self):
         """Get standard config and data directories for Linux."""
-        from platformdirs import user_config_dir, user_data_dir
+        from pywebsearch.platformdirs import user_config_dir, user_data_dir
         config_dir = user_config_dir(
             "pywebsearch",
             appauthor="dmnmsc",

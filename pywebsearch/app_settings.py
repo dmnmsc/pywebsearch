@@ -5,10 +5,10 @@ import sys
 from datetime import datetime
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QMessageBox, QFileDialog
-from config import ConfigHandler
-from history import HistoryManager
-from backup import backup_files, restore_files
-from alias import AliasManager
+from pywebsearch.config import ConfigHandler
+from pywebsearch.history import HistoryManager
+from pywebsearch.backup import backup_files, restore_files
+from pywebsearch.alias import AliasManager
 
 _ = gettext.gettext
 
@@ -21,7 +21,7 @@ class SettingsManager:
         if self.pyweb_app.platform:
             self.config_dir, self.data_dir = self.pyweb_app.platform.get_platform_dirs()
         else:
-            from platformdirs import user_config_dir, user_data_dir
+            from pywebsearch.platformdirs import user_config_dir, user_data_dir
             self.config_dir = user_config_dir(
                 "pywebsearch", appauthor="dmnmsc", ensure_exists=True
             )

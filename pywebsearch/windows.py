@@ -4,7 +4,7 @@ import subprocess
 import sys
 import shlex
 import re
-from platform_base import PlatformHelper
+from pywebsearch.platform_base import PlatformHelper
 from PyQt6.QtGui import QIcon
 
 
@@ -47,7 +47,7 @@ class WindowsHelper(PlatformHelper):
         Return tuple of (config_dir, data_dir) paths appropriate for Windows.
         Uses platformdirs library for standard locations, except when sandboxed.
         """
-        from platformdirs import user_config_dir, user_data_dir
+        from pywebsearch.platformdirs import user_config_dir, user_data_dir
 
         if self.is_sandboxed_windows():
             base_path = os.path.expandvars(
