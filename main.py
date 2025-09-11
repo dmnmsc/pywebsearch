@@ -54,6 +54,7 @@ class PyWebSearchUI(QMainWindow):
         self.setWindowTitle(_("PyWebSearch"))
         self.setWindowIcon(load_icon())
         self.settings.dialogs.parent = self
+        self.script_dir = os.path.dirname(os.path.abspath(__file__))
         self.create_menu_bar()
 
         main_widget = QWidget()
@@ -184,7 +185,11 @@ class PyWebSearchUI(QMainWindow):
                 if action_name == "---":
                     menu.addSeparator()
                 else:
-                    icon = QIcon(icon_path) if icon_path else QIcon()
+                    if icon_path:
+                        full_icon_path = os.path.join(self.script_dir, icon_path)
+                        icon = QIcon(full_icon_path)
+                    else:
+                        icon = QIcon()
                     action = QAction(icon, action_name, self)
                     if handler:
                         action.triggered.connect(handler)
