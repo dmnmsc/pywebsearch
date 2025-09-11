@@ -1,5 +1,3 @@
-from setuptools import setup, find_packages
-
 setup(
     name="pywebsearch",
     version="3.6.0",
@@ -25,6 +23,9 @@ setup(
         ]
     },
     include_package_data=True,
+    package_data={
+        "pywebsearch": ["icons/*.svg"],
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
