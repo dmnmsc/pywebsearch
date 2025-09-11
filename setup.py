@@ -1,3 +1,5 @@
+from setuptools import setup, find_packages
+
 setup(
     name="pywebsearch",
     version="3.6.0",
