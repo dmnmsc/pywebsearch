@@ -1,2 +1,3 @@
 recursive-include pywebsearch *.ico
+recursive-include pywebsearch/icons *.svg
 
