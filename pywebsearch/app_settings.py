@@ -21,7 +21,7 @@ class SettingsManager:
         if self.pyweb_app.platform:
             self.config_dir, self.data_dir = self.pyweb_app.platform.get_platform_dirs()
         else:
-            from pywebsearch.platformdirs import user_config_dir, user_data_dir
+            from platformdirs import user_config_dir, user_data_dir
             self.config_dir = user_config_dir(
                 "pywebsearch", appauthor="dmnmsc", ensure_exists=True
             )

@@ -5,7 +5,7 @@ import sys
 import random
 import gettext
 
-from pywebsearch.platformdirs import user_config_dir
+from platformdirs import user_config_dir
 
 from pywebsearch.search import PyWebSearchApp
 from pywebsearch.app_settings import SettingsManager

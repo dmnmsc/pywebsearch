@@ -30,7 +30,7 @@ class LinuxHelper(PlatformHelper):
 
     def get_platform_dirs(self):
         """Get standard config and data directories for Linux."""
-        from pywebsearch.platformdirs import user_config_dir, user_data_dir
+        from platformdirs import user_config_dir, user_data_dir
         config_dir = user_config_dir(
             "pywebsearch",
             appauthor="dmnmsc",

@@ -47,7 +47,7 @@ class WindowsHelper(PlatformHelper):
         Return tuple of (config_dir, data_dir) paths appropriate for Windows.
         Uses platformdirs library for standard locations, except when sandboxed.
         """
-        from pywebsearch.platformdirs import user_config_dir, user_data_dir
+        from platformdirs import user_config_dir, user_data_dir
 
         if self.is_sandboxed_windows():
             base_path = os.path.expandvars(
