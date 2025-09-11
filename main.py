@@ -40,7 +40,6 @@ translation = gettext.translation("pywebsearch", locales_dir, fallback=True)
 translation.install()
 _ = translation.gettext
 
-
 VERBOSE = False
 
 
@@ -245,17 +244,6 @@ pywebsearch 'g:cockatoo'
             " ".join(sys.argv[1:]), history_manager=settings.history
         )
         sys.exit(0)
-    sys.exit(app.exec())
-
-    main_window = PyWebSearchUI(settings)
-    main_window.show()
-
-    if len(sys.argv) > 1:
-        pyweb_app.process_search(
-            " ".join(sys.argv[1:]), history_manager=settings.history
-        )
-        sys.exit(0)
-
     sys.exit(app.exec())
 
 

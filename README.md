@@ -134,18 +134,18 @@ When you start **PyWebSearch** for the first time, a configuration file is creat
 
 Each alias is a short identifier you can type before your search query to direct it to the corresponding site.
 
-| Alias | Service             | Description           | Example Usage                     |
+| Alias | Service             | Description           | Example Usage                    |
 |-------|---------------------|-----------------------|----------------------------------|
 | g     | Google              | Classic Search        | `g:how hydrogen fuel cells work` |
 | i     | Google Images       | Image Search          | `i:starry night`                 |
 | y     | YouTube             | Videos                | `y:linux tutorial`               |
 | w     | Wikipedia (EN)      | English Wikipedia     | `w:quantum theory`               |
-| p     | Perplexity.ai       | AI-powered Search     | `p:artificial intelligence`     |
-| d     | WordReference       | English Dictionary    | `d:resilience`                  |
+| p     | Perplexity.ai       | AI-powered Search     | `p:artificial intelligence`      |
+| d     | WordReference       | English Dictionary    | `d:resilience`                   |
 | trans | Google Translate    | Automatic Translation | `trans:Hello world`              |
 | gh    | GitHub              | Repositories Search   | `gh:pywebsearch`                 |
 | gl    | GitLab              | Repositories Search   | `gl:pywebsearch`                 |
-| so    | Stack Overflow      | Programming Q&A       | `so:python list comprehension`  |
+| so    | Stack Overflow      | Programming Q&A       | `so:python list comprehension`   |
 | r     | Reddit              | Community Search      | `r:python question`              |
 | .y    | YouTube (Incognito) | External browser flag | `.y:privacy videos`              |
 

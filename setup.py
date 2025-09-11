@@ -12,12 +12,12 @@ setup(
         "main", "app_settings", "search", "alias", "dialogs", "history", "backup", "config", "platform_base", "windows", "linux"
     ],
     install_requires=[
-        "pybrowsers",       # Dependencia universal
+        "pybrowsers",
         "PyQt6",
         "platformdirs"
     ],
     extras_require={
-        "windows": ["installed-browsers"],   # Solo para Windows
+        "windows": ["installed-browsers"],
     },
     entry_points={
         "console_scripts": [
