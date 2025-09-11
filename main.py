@@ -12,7 +12,7 @@ from app_settings import SettingsManager
 
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QAction, QShortcut, QKeySequence
+from PyQt6.QtGui import QAction, QShortcut, QKeySequence, QIcon
 from PyQt6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -146,45 +146,48 @@ class PyWebSearchUI(QMainWindow):
 
     def create_menu_bar(self):
         menu_bar = self.menuBar()
+
         menus = {
             "Search": [
-                (_("📗 Select alias..."), self.settings.show_aliases),
-                (_("🕘 View history"), self.settings.view_history),
-                ("---", None),
-                (_("🧹 Clear history"), self.settings.clear_history),
-                (_("🌐 Open URL..."), self.settings.open_url_dialog),
+                ("icons/alias.svg", _("Select alias"), self.settings.show_aliases),
+                ("icons/history.svg", _("View history"), self.settings.view_history),
+                (None, "---", None),
+                ("icons/clear.svg", _("Clear history"), self.settings.clear_history),
+                ("icons/url.svg", _("Open URL"), self.settings.open_url_dialog),
             ],
             "Alias": [
-                (_("🆕 Create new alias..."), self.settings.create_alias),
-                (_("✏️ Edit alias file"), self.settings.edit_alias),
-                ("---", None),
-                (_("🟢 Set default alias..."), self.settings.set_default_alias),
-                (_("🔄 Reset default alias"), self.settings.reset_default_alias),
+                ("icons/new_alias.svg", _("Create new alias"), self.settings.create_alias),
+                ("icons/edit.svg", _("Edit alias file"), self.settings.edit_alias),
+                (None, "---", None),
+                ("icons/default_alias.svg", _("Set default alias"), self.settings.set_default_alias),
+                ("icons/reset_alias.svg", _("Reset default alias"), self.settings.reset_default_alias),
             ],
             "Settings": [
-                (_("🔵 Set default browser..."), self.settings.set_default_browser),
-                (_("🔗 Change URL prefix..."), self.settings.set_prefix),
-                ("---", None),
-                (_("📤 Create backup..."), self.settings.backup_config),
-                (_("📥 Restore backup..."), self.settings.restore_config),
-                ("---", None),
-                (_("🚀 Import extra browsers..."), self.settings.import_browsers),
-                (_("🔃 Reload conf file"), self.reload_configuration),
+                ("icons/browser.svg", _("Set default browser"), self.settings.set_default_browser),
+                ("icons/url_prefix.svg", _("Change URL prefix"), self.settings.set_prefix),
+                (None, "---", None),
+                ("icons/backup.svg", _("Create backup"), self.settings.backup_config),
+                ("icons/restore.svg", _("Restore backup"), self.settings.restore_config),
+                (None, "---", None),
+                ("icons/rocket.svg", _("Import extra browsers"), self.settings.import_browsers),
+                ("icons/reload.svg", _("Reload conf file"), self.reload_configuration),
             ],
             "Help": [
-                (_("❓ Help"), self.settings.show_help),
-                (_("ℹ️ About..."), self.settings.about_info),
+                ("icons/help.svg", _("Help"), self.settings.show_help),
+                ("icons/about.svg", _("About..."), self.settings.about_info),
             ],
         }
 
         for menu_name, actions in menus.items():
             menu = menu_bar.addMenu(_(menu_name))
-            for action_name, handler in actions:
+            for icon_path, action_name, handler in actions:
                 if action_name == "---":
                     menu.addSeparator()
                 else:
-                    action = QAction(action_name, self)
-                    action.triggered.connect(handler)
+                    icon = QIcon(icon_path) if icon_path else QIcon()
+                    action = QAction(icon, action_name, self)
+                    if handler:
+                        action.triggered.connect(handler)
                     menu.addAction(action)
 
 
