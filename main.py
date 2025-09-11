@@ -5,8 +5,11 @@ import sys
 import random
 import gettext
 
+from platformdirs import user_config_dir
+
 from search import PyWebSearchApp
 from app_settings import SettingsManager
+
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction, QShortcut, QKeySequence
@@ -220,11 +223,7 @@ pywebsearch 'g:cockatoo'
     else:
         from linux import LinuxHelper as platform_mod
 
-    # Accurate config path for integration with SettingsManager setup:
-    # Use the same logic as SettingsManager for config_dir:
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    # If you want absolute per-user config location, use platformdirs logic:
-    from platformdirs import user_config_dir
+    # User config path determined via platformdirs for cross-platform compatibility
     config_dir = user_config_dir("pywebsearch", appauthor="dmnmsc", ensure_exists=True)
     conf_path = os.path.join(config_dir, "pywebsearch.conf")
     from config import ConfigHandler
