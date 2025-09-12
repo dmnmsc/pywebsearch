@@ -9,14 +9,20 @@ from PyQt6.QtGui import QIcon
 
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-ICON_LOCAL = os.path.join(script_dir, "resources", "pywebsearch.ico")
+
+icon_in_package = os.path.join(script_dir, "resources", "pywebsearch.ico")
+
+root_dir = os.path.abspath(os.path.join(script_dir, "..", ".."))
+icon_outside_package = os.path.join(root_dir, "resources", "pywebsearch.ico")
 
 
 def get_icon():
-    if os.path.exists(ICON_LOCAL):
-        return QIcon(ICON_LOCAL)
+    if os.path.exists(icon_in_package):
+        return QIcon(icon_in_package)
+    elif os.path.exists(icon_outside_package):
+        return QIcon(icon_outside_package)
     else:
-        return QIcon()  # No Icon
+        return QIcon()
 
 
 class WindowsHelper(PlatformHelper):
