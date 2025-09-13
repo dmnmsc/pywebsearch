@@ -1,7 +1,7 @@
 import os
 import requests
 
-# Diccionario con nombre y código Unicode del emoji
+# Dictionary with emoji name and Unicode code
 emojis = {
     "browser": "1f535",
     "url_prefix": "1f4ce",
@@ -21,21 +21,21 @@ emojis = {
     "about": "2139"
 }
 
-# Carpeta de salida
-output_dir = "twemoji_svgs"
+# Output folder
+output_dir = "noto_svgs"
 os.makedirs(output_dir, exist_ok=True)
 
-# URL base del repositorio Twemoji
-base_url = "https://raw.githubusercontent.com/jdecked/twemoji/master/assets/svg"
+# Base URL of the Noto Emoji repository
+base_url = "https://raw.githubusercontent.com/googlefonts/noto-emoji/main/svg"
 
 for name, code in emojis.items():
-    url = f"{base_url}/{code}.svg"
+    url = f"{base_url}/emoji_u{code}.svg"
     response = requests.get(url)
     if response.status_code == 200:
         with open(os.path.join(output_dir, f"{name}.svg"), "wb") as f:
             f.write(response.content)
-        print(f"✅ Descargado: {name}.svg")
+        print(f"✅ Downloaded: {name}.svg")
     else:
-        print(f"❌ No se pudo descargar: {name} ({code})")
+        print(f"❌ Failed to download: {name} ({code})")
 
-print("🎉 Descarga completada.")
+print("🎉 Download completed.")
