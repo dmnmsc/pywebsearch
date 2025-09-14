@@ -242,6 +242,9 @@ pywebsearch 'g:cockatoo'
     platform_helper.config = config_handler_instance
 
     app = QApplication(sys.argv)
+    app.setApplicationName("pywebsearch")
+    app.setApplicationDisplayName("PyWebSearch")
+    app.setDesktopFileName("pywebsearch")
     pyweb_app = PyWebSearchApp(platform_module=platform_helper)
     settings = SettingsManager(pyweb_app, version=VERSION)
     main_window = PyWebSearchUI(settings)
