@@ -1,6 +1,6 @@
 # Maintainer: dmnmsc
 pkgname=pywebsearch-git
-pkgver=r73.3fb7e3b
+pkgver=r74.7931517
 pkgrel=1
 pkgdesc="Customizable web search tool with aliases, !bangs and GUI (PyQt6)"
 arch=('any')
@@ -27,8 +27,9 @@ package() {
   cd "$srcdir/$pkgname"
   python -m installer --destdir="$pkgdir" dist/*.whl
 
-  cp -r resources/linux_icons/* "$pkgdir/usr/share/icons/hicolor/"
+  install -Dm644 resources/pywebsearch.desktop \
+   "$pkgdir/usr/share/applications/pywebsearch.desktop"
 
-  install -Dm644 resources/pywebsearch.png \
-    "$pkgdir/usr/share/icons/hicolor/48x48/apps/pywebsearch.png"
+  mkdir -p "$pkgdir/usr/share/icons/hicolor"
+  cp -r resources/linux_icons/* "$pkgdir/usr/share/icons/hicolor/"
 }
