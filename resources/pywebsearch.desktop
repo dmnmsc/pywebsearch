@@ -3,4 +3,5 @@ Type=Application
 Name=PyWebSearch
 Exec=pywebsearch
 Icon=pywebsearch
+StartupWMClass=pywebsearch
 Categories=Utility;Internet;
