@@ -24,7 +24,7 @@ setup(
     },
     include_package_data=True,
     package_data={
-        "pywebsearch": ["icons/*.svg"],
+        "pywebsearch": ["icons/*.*"],
     },
     classifiers=[
         "Programming Language :: Python :: 3",

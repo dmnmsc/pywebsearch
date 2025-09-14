@@ -8,19 +8,30 @@ from pywebsearch.platform_base import PlatformHelper
 from PyQt6.QtGui import QIcon
 
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-
-icon_in_package = os.path.join(script_dir, "resources", "pywebsearch.ico")
-
-root_dir = os.path.abspath(os.path.join(script_dir, "..", ".."))
-icon_outside_package = os.path.join(root_dir, "resources", "pywebsearch.ico")
-
+def resource_path(relative_path):
+    """Get absolute path to resource considering PyInstaller and installed package."""
+    if hasattr(sys, '_MEIPASS'):
+        # En PyInstaller el icono está en la subcarpeta 'icons' dentro de _MEIPASS
+        return os.path.join(sys._MEIPASS, "icons", relative_path)
+    else:
+        try:
+            import importlib.resources as pkg_resources
+        except ImportError:
+            import importlib_resources as pkg_resources
+        package_name = "pywebsearch.icons"
+        resource_name = os.path.basename(relative_path)
+        try:
+            with pkg_resources.path(package_name, resource_name) as p:
+                return str(p)
+        except Exception:
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            return os.path.join(base_dir, "icons", resource_name)
 
 def get_icon():
-    if os.path.exists(icon_in_package):
-        return QIcon(icon_in_package)
-    elif os.path.exists(icon_outside_package):
-        return QIcon(icon_outside_package)
+    icon_rel_name = "pywebsearch.ico"
+    icon_path = resource_path(icon_rel_name)
+    if os.path.exists(icon_path):
+        return QIcon(icon_path)
     else:
         return QIcon()
 
