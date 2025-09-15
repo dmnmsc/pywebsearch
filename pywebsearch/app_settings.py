@@ -4,6 +4,7 @@ import webbrowser
 import sys
 from datetime import datetime
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QMessageBox, QFileDialog
 from pywebsearch.config import ConfigHandler
 from pywebsearch.history import HistoryManager
@@ -358,6 +359,8 @@ class SettingsManager:
         msg_box = QMessageBox(
             QMessageBox.Icon.Information, _("About pywebsearch"), about_text
         )
+        from pywebsearch.main import load_icon
+        msg_box.setWindowIcon(QIcon(load_icon()))
         msg_box.setTextFormat(Qt.TextFormat.RichText)
         open_button = msg_box.addButton(
             "🌐 Open website", QMessageBox.ButtonRole.AcceptRole
