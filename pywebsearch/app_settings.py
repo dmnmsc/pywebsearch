@@ -369,4 +369,4 @@ class SettingsManager:
         msg_box.setDefaultButton(open_button)
         msg_box.exec()
         if msg_box.clickedButton() == open_button:
-            webbrowser.open("https://github.com/dmnmsc/pywebsearch")
+            self.pyweb_app.launch_url("https://github.com/dmnmsc/pywebsearch")
