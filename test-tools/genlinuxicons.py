@@ -2,32 +2,54 @@
 
 import os
 import sys
-from PIL import Image
+import shutil
+import subprocess
+from cairosvg import svg2png
 
-def create_icons(png_path, output_folder):
-    sizes = [(16, 16), (24, 24), (48, 48), (64, 64)]
-    icons_created = []
+def generate_icons(svg_path: str, output_dir: str) -> list:
+    sizes = [16, 24, 32, 48, 64, 96, 128, 256, 512]
+    created_icons = []
+
     for size in sizes:
-        image = Image.open(png_path)
-        resized_image = image.resize(size, Image.LANCZOS)
-        size_folder = f"{size[0]}x{size[1]}"
-        folder = os.path.join(output_folder, size_folder, "apps")
-        os.makedirs(folder, exist_ok=True)
-        icon_name = os.path.basename(png_path)
-        destination = os.path.join(folder, icon_name)
-        resized_image.save(destination)
-        icons_created.append(destination)
-        print(f"Icon created in {destination}")
-    return icons_created
+        size_folder = f"{size}x{size}"
+        target_folder = os.path.join(output_dir, size_folder, "apps")
+        os.makedirs(target_folder, exist_ok=True)
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: ./script_name.py path/to/icon.png")
-        sys.exit(1)
-    icon_path = sys.argv[1]
-    temp_folder = "/tmp/pywebsearch_icons"
-    create_icons(icon_path, temp_folder)
+        # Generate PNG
+        png_path = os.path.join(target_folder, "pywebsearch.png")
+        svg2png(url=svg_path, write_to=png_path, output_width=size, output_height=size)
+        created_icons.append(png_path)
+        print(f"PNG icon generated: {png_path}")
 
-    print("\nTo install the icons system-wide, run the following commands with root permissions:")
-    print(f"sudo cp -r {os.path.join(temp_folder, '*')} /usr/share/icons/hicolor/")
-    print("sudo gtk-update-icon-cache /usr/share/icons/hicolor")
+        # Copy SVG into each size folder
+        svg_target = os.path.join(target_folder, "pywebsearch.svg")
+        shutil.copy(svg_path, svg_target)
+        print(f"SVG copied to: {svg_target}")
+
+    # Copy SVG to scalable/apps
+    scalable_folder = os.path.join(output_dir, "scalable", "apps")
+    os.makedirs(scalable_folder, exist_ok=True)
+    scalable_svg_path = os.path.join(scalable_folder, "pywebsearch.svg")
+    shutil.copy(svg_path, scalable_svg_path)
+    print(f"SVG copied to: {scalable_svg_path}")
+
+    return created_icons
+
+def install_icons(temp_output: str):
+    print("\nInstalling icons system-wide...")
+    try:
+        # Run system-level install as root
+        subprocess.run([
+            "sudo", "bash", "-c",
+            f"cp -r {os.path.join(temp_output, '*')} /usr/share/icons/hicolor/ && "
+            "gtk-update-icon-cache /usr/share/icons/hicolor"
+        ], check=True)
+        print("✅ Icons installed.")
+
+        # Restart plasmashell as current user
+        subprocess.run(["kquitapp6", "plasmashell"])
+        subprocess.run(["kstart", "plasmashell"])
+        print("🔄 Plasma shell restarted.")
+
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Installation failed: {e}")
