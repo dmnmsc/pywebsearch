@@ -10,18 +10,20 @@ import re
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
+ICON_INSTALLED_SVG = "/usr/share/icons/hicolor/48x48/apps/pywebsearch.svg"
+
+ICON_LOCAL_SVG = os.path.join(script_dir, "resources", "pywebsearch.svg")
+
 ICON_INSTALLED = "/usr/share/icons/hicolor/48x48/apps/pywebsearch.png"
 
 ICON_LOCAL = os.path.join(script_dir, "resources", "pywebsearch.png")
 
 
 def get_icon() -> QIcon:
-    if os.path.exists(ICON_INSTALLED):
-        return QIcon(ICON_INSTALLED)
-    elif os.path.exists(ICON_LOCAL):
-        return QIcon(ICON_LOCAL)
-    else:
-        return QIcon()
+    for path in (ICON_INSTALLED_SVG, ICON_INSTALLED, ICON_LOCAL_SVG, ICON_LOCAL):
+        if os.path.exists(path):
+            return QIcon(path)
+    return QIcon()
 
 
 class LinuxHelper(PlatformHelper):
