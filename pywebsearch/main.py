@@ -20,6 +20,8 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QLabel,
     QLineEdit,
+    QSystemTrayIcon,
+    QMenu,
 )
 
 VERSION = 3.6
@@ -104,6 +106,25 @@ class PyWebSearchUI(QMainWindow):
 
         shortcut = QShortcut(QKeySequence("F5"), self)
         shortcut.activated.connect(self.reload_configuration)
+      
+        # Added for tray icon functionality in Windows
+        self.tray_icon = None
+        self.is_quitting = False
+
+    def closeEvent(self, event):
+        if sys.platform.startswith("win32"):
+            if not self.is_quitting:
+                event.ignore()
+                self.hide()
+                if self.tray_icon:
+                    self.tray_icon.showMessage(
+                        "PyWebSearch",
+                        "La aplicación sigue funcionando en la bandeja de sistema.",
+                        QSystemTrayIcon.MessageIcon.Information,
+                        3000
+                    )
+        else:
+            event.accept()
 
     def reload_configuration(self):
         self.settings.reload_config()
@@ -241,14 +262,31 @@ pywebsearch 'g:cockatoo'
     platform_helper = platform_mod()
     platform_helper.config = config_handler_instance
 
+    # --- Single Instance Check ---
+    if platform_helper.check_single_instance():
+        platform_helper.send_activation_message()
+        sys.exit(0)
+
     app = QApplication(sys.argv)
     app.setApplicationName("pywebsearch")
     app.setApplicationDisplayName("PyWebSearch")
     app.setDesktopFileName("pywebsearch")
+    
     pyweb_app = PyWebSearchApp(platform_module=platform_helper)
+    pyweb_app.platform_helper = platform_helper
     settings = SettingsManager(pyweb_app, version=VERSION)
+    
     main_window = PyWebSearchUI(settings)
+    platform_helper.main_window = main_window
+    
+    tray_icon = None
+    if hasattr(settings.pyweb_app, "platform_helper"):
+        tray_icon = settings.pyweb_app.platform_helper.init_tray_icon(main_window)
+        if tray_icon:
+            main_window.tray_icon = tray_icon
+            
     main_window.show()
+    
     if len(sys.argv) > 1:
         pyweb_app.process_search(
             " ".join(sys.argv[1:]), history_manager=settings.history

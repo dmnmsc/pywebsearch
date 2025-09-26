@@ -4,8 +4,12 @@ import subprocess
 import sys
 import shlex
 import re
+import sys
 from pywebsearch.platform_base import PlatformHelper
-from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QSystemTrayIcon, QMenu, QApplication
+from PyQt6.QtGui import QIcon, QAction
+from PyQt6.QtNetwork import QLocalServer, QLocalSocket
+from PyQt6.QtCore import QByteArray
 
 
 def resource_path(relative_path):
@@ -26,6 +30,7 @@ def resource_path(relative_path):
         except Exception:
             base_dir = os.path.dirname(os.path.abspath(__file__))
             return os.path.join(base_dir, "icons", resource_name)
+            
 
 def get_icon():
     icon_rel_name = "pywebsearch.ico"
@@ -48,6 +53,8 @@ class WindowsHelper(PlatformHelper):
         self.browser_map = self._detect_browsers()
         self.config = None  # Assigned externally if needed
         self.aliases = {}
+        self.single_instance_server = None
+        self.main_window = None
 
     def is_sandboxed_windows(self):
         """
@@ -356,3 +363,78 @@ class WindowsHelper(PlatformHelper):
                 if verbose:
                     print(f"[Windows] Error launching alias command fallback with start: {e2}")
                 return False
+                
+    def init_tray_icon(self, main_window):
+        tray_icon = QSystemTrayIcon(main_window.windowIcon(), parent=main_window)
+        menu = QMenu()
+
+        restore_action = QAction("Restore", menu)
+        quit_action = QAction("Exit", menu)
+
+        def restore_window():
+            main_window.show()
+            main_window.raise_()
+            main_window.activateWindow()
+
+        def quit_app():
+            main_window.is_quitting = True
+            tray_icon.hide()
+            sys.exit()
+
+        restore_action.triggered.connect(restore_window)
+        quit_action.triggered.connect(quit_app)
+
+        menu.addAction(restore_action)
+        menu.addAction(quit_action)
+        tray_icon.setContextMenu(menu)
+        tray_icon.show()
+
+        def on_tray_icon_activated(reason):
+            if reason in (QSystemTrayIcon.ActivationReason.Trigger, QSystemTrayIcon.ActivationReason.DoubleClick):
+                restore_window()
+
+        tray_icon.activated.connect(on_tray_icon_activated)
+
+        return tray_icon
+
+    def check_single_instance(self):
+        server_name = "PyWebSearchInstance"
+        socket = QLocalSocket()
+        socket.connectToServer(server_name)
+        if socket.waitForConnected(100):
+            socket.close()
+            return True
+
+        self.single_instance_server = QLocalServer()
+        QLocalServer.removeServer(server_name)
+        if not self.single_instance_server.listen(server_name):
+            return True
+
+        self.single_instance_server.newConnection.connect(self.handle_new_connection)
+        return False
+
+    def handle_new_connection(self):
+        socket = self.single_instance_server.nextPendingConnection()
+        if not socket:
+            return
+            
+        if socket.waitForReadyRead(1000):
+            data = bytes(socket.readAll())
+            if data == b"ACTIVATE":
+                if self.main_window:
+                    self.main_window.show()
+                    self.main_window.raise_()
+                    self.main_window.activateWindow()
+                    self.main_window.search_input.setFocus()
+                    QApplication.processEvents()
+                    
+        socket.disconnectFromServer()
+
+    def send_activation_message(self):
+        socket = QLocalSocket()
+        socket.connectToServer("PyWebSearchInstance")
+        if socket.waitForConnected(1000):
+            socket.write(QByteArray(b"ACTIVATE"))
+            socket.flush()
+            socket.waitForBytesWritten(1000)
+            socket.close()
