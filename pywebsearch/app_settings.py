@@ -1,6 +1,5 @@
 import os
 import gettext
-import webbrowser
 import sys
 from datetime import datetime
 from PyQt6.QtCore import Qt

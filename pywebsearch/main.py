@@ -106,7 +106,7 @@ class PyWebSearchUI(QMainWindow):
 
         shortcut = QShortcut(QKeySequence("F5"), self)
         shortcut.activated.connect(self.reload_configuration)
-      
+
         # Added for tray icon functionality in Windows
         self.tray_icon = None
         self.is_quitting = False
@@ -271,22 +271,22 @@ pywebsearch 'g:cockatoo'
     app.setApplicationName("pywebsearch")
     app.setApplicationDisplayName("PyWebSearch")
     app.setDesktopFileName("pywebsearch")
-    
+
     pyweb_app = PyWebSearchApp(platform_module=platform_helper)
     pyweb_app.platform_helper = platform_helper
     settings = SettingsManager(pyweb_app, version=VERSION)
-    
+
     main_window = PyWebSearchUI(settings)
     platform_helper.main_window = main_window
-    
+
     tray_icon = None
     if hasattr(settings.pyweb_app, "platform_helper"):
         tray_icon = settings.pyweb_app.platform_helper.init_tray_icon(main_window)
         if tray_icon:
             main_window.tray_icon = tray_icon
-            
+
     main_window.show()
-    
+
     if len(sys.argv) > 1:
         pyweb_app.process_search(
             " ".join(sys.argv[1:]), history_manager=settings.history

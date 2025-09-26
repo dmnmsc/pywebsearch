@@ -4,7 +4,6 @@ import subprocess
 import sys
 import shlex
 import re
-import sys
 from pywebsearch.platform_base import PlatformHelper
 from PyQt6.QtWidgets import QSystemTrayIcon, QMenu, QApplication
 from PyQt6.QtGui import QIcon, QAction
@@ -30,7 +29,7 @@ def resource_path(relative_path):
         except Exception:
             base_dir = os.path.dirname(os.path.abspath(__file__))
             return os.path.join(base_dir, "icons", resource_name)
-            
+
 
 def get_icon():
     icon_rel_name = "pywebsearch.ico"
@@ -363,7 +362,7 @@ class WindowsHelper(PlatformHelper):
                 if verbose:
                     print(f"[Windows] Error launching alias command fallback with start: {e2}")
                 return False
-                
+
     def init_tray_icon(self, main_window):
         tray_icon = QSystemTrayIcon(main_window.windowIcon(), parent=main_window)
         menu = QMenu()
@@ -417,7 +416,7 @@ class WindowsHelper(PlatformHelper):
         socket = self.single_instance_server.nextPendingConnection()
         if not socket:
             return
-            
+
         if socket.waitForReadyRead(1000):
             data = bytes(socket.readAll())
             if data == b"ACTIVATE":
@@ -427,7 +426,7 @@ class WindowsHelper(PlatformHelper):
                     self.main_window.activateWindow()
                     self.main_window.search_input.setFocus()
                     QApplication.processEvents()
-                    
+
         socket.disconnectFromServer()
 
     def send_activation_message(self):

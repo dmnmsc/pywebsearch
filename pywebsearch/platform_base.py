@@ -54,14 +54,14 @@ class PlatformHelper:
 
     def launch_default_system_url(self, url, verbose=False):
         raise NotImplementedError
-        
+
     def init_tray_icon(self, main_window):
         """
         Initialize the system tray icon for the platform.
         Base implementation does nothing.
         """
         return None
-        
+
     def check_single_instance(self):
         """
         Check if an instance is already running.
