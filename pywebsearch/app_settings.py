@@ -174,7 +174,7 @@ class SettingsManager:
         )
         if not backups:
             self.dialogs.show_message_box(
-                ("❌ No backups found."), _("Error"), QMessageBox.Icon.Critical
+                _("❌ No backups found."), _("Error"), QMessageBox.Icon.Critical
             )
             return
 
