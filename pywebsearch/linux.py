@@ -6,6 +6,7 @@ import subprocess
 from pywebsearch.platform_base import PlatformHelper
 from PyQt6.QtGui import QIcon
 import re
+from PyQt6.QtCore import Qt
 
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -163,3 +164,16 @@ class LinuxHelper(PlatformHelper):
                 if exe not in detected_manual:
                     found.add(exe)
         return found
+
+    def handle_key_press_event(self, main_window, event):
+        if event.key() == Qt.Key.Key_Escape:
+            main_window.is_quitting = True
+            main_window.close()
+            return True
+        return False
+
+    def handle_close_event(self, main_window, event):
+        if not getattr(main_window, "is_quitting", False):
+            event.accept()
+            return True
+        return False
