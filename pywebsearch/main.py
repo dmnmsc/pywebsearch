@@ -11,7 +11,6 @@ from pywebsearch.search import PyWebSearchApp
 from pywebsearch.app_settings import SettingsManager
 
 
-from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction, QShortcut, QKeySequence, QIcon
 from PyQt6.QtWidgets import (
     QApplication,
@@ -20,8 +19,6 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QLabel,
     QLineEdit,
-    QSystemTrayIcon,
-    QMenu,
 )
 
 VERSION = 3.6
@@ -110,21 +107,7 @@ class PyWebSearchUI(QMainWindow):
         # Added for tray icon functionality in Windows
         self.tray_icon = None
         self.is_quitting = False
-
-    def closeEvent(self, event):
-        if sys.platform.startswith("win32"):
-            if not self.is_quitting:
-                event.ignore()
-                self.hide()
-                if self.tray_icon:
-                    self.tray_icon.showMessage(
-                        "PyWebSearch",
-                        "La aplicación sigue funcionando en la bandeja de sistema.",
-                        QSystemTrayIcon.MessageIcon.Information,
-                        3000
-                    )
-        else:
-            event.accept()
+        self.notified_tray = False
 
     def reload_configuration(self):
         self.settings.reload_config()
@@ -161,10 +144,18 @@ class PyWebSearchUI(QMainWindow):
         self.search_input.clear()
 
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key.Key_Escape:
-            self.close()
-        else:
-            super().keyPressEvent(event)
+        if hasattr(self.settings.pyweb_app.platform_helper, "handle_key_press_event"):
+            handled = self.settings.pyweb_app.platform_helper.handle_key_press_event(self, event)
+            if handled:
+                return
+        super().keyPressEvent(event)
+
+    def closeEvent(self, event):
+        if hasattr(self.settings.pyweb_app.platform_helper, "handle_close_event"):
+            handled = self.settings.pyweb_app.platform_helper.handle_close_event(self, event)
+            if handled:
+                return
+        super().closeEvent(event)
 
     def create_menu_bar(self):
         menu_bar = self.menuBar()

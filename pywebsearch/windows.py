@@ -4,17 +4,20 @@ import subprocess
 import sys
 import shlex
 import re
+import gettext
 from pywebsearch.platform_base import PlatformHelper
 from PyQt6.QtWidgets import QSystemTrayIcon, QMenu, QApplication
 from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtNetwork import QLocalServer, QLocalSocket
-from PyQt6.QtCore import QByteArray
+from PyQt6.QtCore import QByteArray, Qt
+
+_ = gettext.gettext
 
 
 def resource_path(relative_path):
     """Get absolute path to resource considering PyInstaller and installed package."""
     if hasattr(sys, '_MEIPASS'):
-        # En PyInstaller el icono está en la subcarpeta 'icons' dentro de _MEIPASS
+        # In pyinstalller the icon is in the subfolder 'ICons' within _meipass
         return os.path.join(sys._MEIPASS, "icons", relative_path)
     else:
         try:
@@ -437,3 +440,42 @@ class WindowsHelper(PlatformHelper):
             socket.flush()
             socket.waitForBytesWritten(1000)
             socket.close()
+
+    def handle_key_press_event(self, main_window, event):
+        if event.key() == Qt.Key.Key_Q and event.modifiers() & Qt.KeyboardModifier.ControlModifier:
+            main_window.is_quitting = True
+            main_window.close()
+            return True
+
+        if event.key() == Qt.Key.Key_Escape:
+            if main_window.tray_icon:
+                main_window.hide()
+                if not getattr(main_window, "notified_tray", False):
+                    main_window.tray_icon.showMessage(
+                        "PyWebSearch",
+                        _("PyWebSearch is still running in the system tray."),
+                        main_window.tray_icon.MessageIcon.Information,
+                        800,
+                    )
+                    main_window.notified_tray = True
+                return True
+            else:
+                main_window.close()
+                return True
+
+        return False
+
+    def handle_close_event(self, main_window, event):
+        # Accept event if it's from OS (Alt+F4)
+        if event.spontaneous():
+            main_window.is_quitting = True
+            event.accept()
+            return True
+
+        # Otherwise, hide if not quitting (for ESC, etc)
+        if not main_window.is_quitting:
+            event.ignore()
+            main_window.hide()
+            # Tray message shown in keyPressEvent ESC only once
+            return True
+        return False
