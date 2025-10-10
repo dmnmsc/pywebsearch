@@ -21,7 +21,7 @@ from PyQt6.QtWidgets import (
     QLineEdit,
 )
 
-VERSION = 3.6
+VERSION = "3.6.1"
 
 # Icon
 if sys.platform.startswith("linux"):
