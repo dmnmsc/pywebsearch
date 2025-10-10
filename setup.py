@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pywebsearch",
-    version="3.6.1",
+    version="3.6.0",
     description="Customizable web search tool with aliases, !bangs, and GUI",
     author="dmnmsc",
     url="https://github.com/dmnmsc/pywebsearch",

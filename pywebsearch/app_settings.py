@@ -1,7 +1,6 @@
 import os
 import gettext
 import sys
-import pathlib
 from datetime import datetime
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
@@ -334,13 +333,11 @@ class SettingsManager:
         self.dialogs.show_message_box(help_text)
 
     def about_info(self):
-        base_path = pathlib.Path(__file__).resolve()
-        mtime = datetime.fromtimestamp(os.path.getmtime(base_path)).strftime("%Y-%m-%d")
         about_text = _(
             f"""<b>🛠️ pywebsearch - Custom web search tool</b><br>
     Version: <b>{self.version}</b><br>
     Author: <i>dmnmsc</i><br>
-    Last updated: <u>{mtime}</u><br><br>
+    Last updated: <u>{datetime.now().strftime("%Y-%m-%d")}</u><br><br>
     📌 <b>What is pywebsearch?</b><br>
     A simple and practical tool to perform fast searches and open web pages using customizable aliases and !bangs, with a user-friendly GUI.<br><br>
     ⭐ <b>Main features:</b><br>
