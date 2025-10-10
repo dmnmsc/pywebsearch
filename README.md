@@ -201,6 +201,12 @@ Each alias has three components: **name**, **description**, and **search URL** (
 
 Contributions are welcome! Please fork the repository and create a pull request for any bug fixes or features.
 
+## 🎨 Icon Credits
+
+Icon ["Search Globe SVG Vector 2"](https://www.svgrepo.com/svg/522651/search-globe) by [Vlad Cristea](https://www.svgrepo.com/author/Vlad%20Cristea/),  
+licensed under [CC Attribution License](https://www.svgrepo.com/page/licensing/#CC%20Attribution).  
+This license applies only to the icon, not to the PyWebSearch software.
+
 ## 📄 License
 
 This project is licensed under the GNU General Public License v3.0 (GPL-3.0) - see the [LICENSE](LICENSE) file for details.
@@ -209,4 +215,3 @@ The GNU GPLv3 license ensures that any derivative works are also open source and
 It is a copyleft license that enforces source code disclosure when distributing modified versions.
 
 For more information about the license, visit the [GNU GPLv3 official site](https://www.gnu.org/licenses/gpl-3.0.en.html).
-

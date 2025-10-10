@@ -334,10 +334,8 @@ class SettingsManager:
 
     def about_info(self):
         about_text = _(
-            f"""<b>🛠️ pywebsearch - Custom web search tool</b><br>
-    Version: <b>{self.version}</b><br>
-    Author: <i>dmnmsc</i><br>
-    Last updated: <u>{datetime.now().strftime("%Y-%m-%d")}</u><br><br>
+            f"""<h2 style="color:#2E86C1;">🛠️ pywebsearch <span style="font-size:22px; font-weight:bold; padding:3px 6px; border-radius:4px;">v{self.version}</span></h2>
+    <br>
     📌 <b>What is pywebsearch?</b><br>
     A simple and practical tool to perform fast searches and open web pages using customizable aliases and !bangs, with a user-friendly GUI.<br><br>
     ⭐ <b>Main features:</b><br>
@@ -351,6 +349,10 @@ class SettingsManager:
     <a href="file://{self.conf_path}">{self.conf_path}</a><br><br>
     • <b>Search history:</b><br>
     <a href="file://{self.hist_path}">{self.hist_path}</a><br><br>
+    🎨 <b>Icon credits:</b><br>
+    <a href="https://www.svgrepo.com/svg/522651/search-globe">Search Globe SVG Vector 2</a> by 
+    <a href="https://www.svgrepo.com/author/Vlad%20Cristea/">Vlad Cristea</a>
+    distributed under <a href="https://www.svgrepo.com/page/licensing/#CC%20Attribution">CC Attribution License</a><br><br>
     🔗 <b>More info and source code:</b><br>
     <a href="https://github.com/dmnmsc/pywebsearch">https://github.com/dmnmsc/pywebsearch</a>
     """
