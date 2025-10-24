@@ -75,13 +75,15 @@ class ConfigHandler:
                     """# 🧠 Default alias (if left empty, DuckDuckGo via !bangs will be used)
 default_alias=""
 
-# 🌐 Default browser (firefox, chromium, brave, google-chrome...)
+# 🌐 Default and alt browser (firefox, chromium, brave, google-chrome...)
 # Leave empty to use system default
 default_browser=""
+alt_browser=""
 
 # 🚀 Prefix to open URLs directly (e.g., >github.com)
 # You can change to ~, @, ^, ::, >, etc.
 cmd_prefix=">"
+alt_cmd_prefix="@"
 
 # 🧭 Extra imported browsers (comma-separated)
 extra_browsers=""

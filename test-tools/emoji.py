@@ -4,7 +4,9 @@ import requests
 # Dictionary with emoji name and Unicode code
 emojis = {
     "browser": "1f535",
+    "altbrowser": "1f7e4",
     "url_prefix": "1f4ce",
+    "altbrowser_prefix":"1f587",
     "backup": "1f4e4",
     "restore": "1f4e5",
     "rocket": "1f680",

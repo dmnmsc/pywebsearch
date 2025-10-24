@@ -21,7 +21,7 @@ from PyQt6.QtWidgets import (
     QLineEdit,
 )
 
-VERSION = 3.6
+VERSION = "3.6.1"
 
 # Icon
 if sys.platform.startswith("linux"):
@@ -120,6 +120,7 @@ class PyWebSearchUI(QMainWindow):
 
         commands = {
             "_defaultbrowser": self.settings.set_default_browser,
+            "_altbrowser": self.settings.set_alt_browser,
             "_importbrowsers": self.settings.import_browsers,
             "_alias": self.settings.show_aliases,
             "_newalias": self.settings.create_alias,
@@ -129,6 +130,7 @@ class PyWebSearchUI(QMainWindow):
             "_history": self.settings.view_history,
             "_clear": self.settings.clear_history,
             "_prefix": self.settings.set_prefix,
+            "_altprefix": self.settings.set_alt_cmd_prefix,
             "_backup": self.settings.backup_config,
             "_restore": self.settings.restore_config,
             "_help": self.settings.show_help,
@@ -178,6 +180,8 @@ class PyWebSearchUI(QMainWindow):
             "Settings": [
                 ("icons/browser.svg", _("Set default browser"), self.settings.set_default_browser),
                 ("icons/url_prefix.svg", _("Change URL prefix"), self.settings.set_prefix),
+                ("icons/altbrowser.svg", _("Set alternative browser"), self.settings.set_alt_browser),
+                ("icons/altbrowser_prefix.svg", _("Change alternative browser prefix"), self.settings.set_alt_cmd_prefix),
                 (None, "---", None),
                 ("icons/backup.svg", _("Create backup"), self.settings.backup_config),
                 ("icons/restore.svg", _("Restore backup"), self.settings.restore_config),

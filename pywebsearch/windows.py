@@ -254,9 +254,9 @@ class WindowsHelper(PlatformHelper):
                 print(f"[Windows] Error launching browser: {e}")
             return False
 
-    def launch_url(self, url, verbose=False):
+    def launch_url(self, url, browser=None, verbose=False):
         """
-        Launch specified URL using default browser configured in pywebsearch.conf.
+        Launch specified URL using default browser configured in pywebsearch.conf or alt_browser.
         Uses 'browsers.launch' when available, falls back to manual launching or system default.
         """
         try:
@@ -266,15 +266,18 @@ class WindowsHelper(PlatformHelper):
             if verbose:
                 print("[Windows] 'browsers' module not found, falling back")
 
-        default_browser_str = self.read_default_browser_from_config()
+        if browser:
+            browser_str = browser
+        else:
+            browser_str = self.read_default_browser_from_config()
 
-        if not default_browser_str:
+        if not browser_str:
             if verbose:
-                print("[Windows] No default_browser configured, using system default browser")
+                print("[Windows] No browser configured, using system default browser")
             subprocess.Popen(f'start "" "{url}"', shell=True)
             return
 
-        parts = shlex.split(default_browser_str)
+        parts = shlex.split(browser_str)
         browser_name = parts[0].lower()
         args = parts[1:]
 
@@ -289,7 +292,7 @@ class WindowsHelper(PlatformHelper):
                     print(f"[Windows] browsers.launch failed: {e}")
 
         # Fallback to manual launch
-        exec_path, args_resolved = self.get_default_browser_command(default_browser_str)
+        exec_path, args_resolved = self.get_default_browser_command(browser_str)
         cmd_list = [exec_path] + args_resolved + [url]
 
         if verbose:

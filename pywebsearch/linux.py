@@ -2,6 +2,7 @@
 import glob
 import os
 import shutil
+import shlex
 import subprocess
 from pywebsearch.platform_base import PlatformHelper
 from PyQt6.QtGui import QIcon
@@ -177,3 +178,42 @@ class LinuxHelper(PlatformHelper):
             event.accept()
             return True
         return False
+
+    def launch_url(self, url, browser=None, verbose=True):
+        if not browser:
+            browser = getattr(self, 'get_default_browser_command', lambda: 'xdg-open')()
+
+        try:
+            parts = shlex.split(browser)
+        except Exception:
+            parts = ['xdg-open']
+
+        allowed_browsers = {"chromium", "firefox", "brave", "google-chrome", "chrome", "opera", "safari"}
+
+        executable = parts[0].lower()
+        flags = parts[1:]
+
+        if executable not in allowed_browsers:
+            if verbose:
+                print(f"[LinuxHelper] Unsafe browser executable: {executable}, fallback to xdg-open")
+            parts = ['xdg-open']
+            flags = []
+
+        cmd = parts + [url]
+
+        try:
+            subprocess.Popen(
+                cmd,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                start_new_session=True,
+            )
+        except Exception as e:
+            if verbose:
+                print(f"[ERROR][LinuxHelper] Error launching URL with browser '{browser}': {e}, fallback to xdg-open")
+            subprocess.Popen(
+                ['xdg-open', url],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                start_new_session=True,
+            )
