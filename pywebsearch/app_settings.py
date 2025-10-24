@@ -1,7 +1,6 @@
 import os
 import gettext
 import sys
-from datetime import datetime
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QMessageBox, QFileDialog
@@ -46,6 +45,8 @@ class SettingsManager:
         self.pyweb_app.default_alias = self.config.get_value("default_alias")
         self.pyweb_app.default_browser = self.config.get_value("default_browser")
         self.pyweb_app.cmd_prefix = self.config.get_value("cmd_prefix") or ">"
+        self.pyweb_app.alt_cmd_prefix = self.config.get_value("alt_cmd_prefix") or "@"
+        self.pyweb_app.alt_browser = self.config.get_value("alt_browser")
         self.alias_manager = AliasManager(
             self.dialogs,
             self.conf_path,
@@ -78,6 +79,8 @@ class SettingsManager:
         self.pyweb_app.default_alias = self.config.get_value("default_alias")
         self.pyweb_app.default_browser = self.config.get_value("default_browser")
         self.pyweb_app.cmd_prefix = self.config.get_value("cmd_prefix") or ">"
+        self.pyweb_app.alt_cmd_prefix = self.config.get_value("alt_cmd_prefix") or "@"
+        self.pyweb_app.alt_browser = self.config.get_value("alt_browser")
         self.pyweb_app.reload_config()
         self.alias_manager.aliases = self.aliases
 
@@ -133,6 +136,39 @@ class SettingsManager:
         self.dialogs.show_message_box(
             _("✅ Default browser updated to: ") + new_browser
         )
+        self.reload_config()
+
+    def set_alt_browser(self):
+        current = self.pyweb_app.alt_browser or ""
+        new_browser = self.dialogs.get_input(
+            _("Set alternative browser command"),
+            _("Enter the alternative browser command with options (e.g. chromium --new-tab):"),
+            text=current,
+            select_text=True,
+        )
+        if new_browser is None:
+            return
+        self.config.set_value("alt_browser", new_browser)
+        self.dialogs.show_message_box(_("✅ Alternative browser updated to: ") + new_browser)
+        self.reload_config()
+
+    def set_alt_cmd_prefix(self):
+        current = self.pyweb_app.alt_cmd_prefix or "@"
+        new_prefix = self.dialogs.get_input(
+            _("Change alternative command prefix"),
+            _("Enter new symbol to use as alternative command prefix:"),
+            text=current,
+            select_text=True,
+        )
+        if new_prefix is None or not new_prefix or " " in new_prefix:
+            self.dialogs.show_message_box(
+                _("Invalid prefix. No changes made."),
+                _("Error"),
+                icon=QMessageBox.Icon.Warning,
+            )
+            return
+        self.config.set_value("alt_cmd_prefix", new_prefix)
+        self.dialogs.show_message_box(_("✅ Alternative command prefix updated to: ") + new_prefix)
         self.reload_config()
 
     def backup_config(self):
