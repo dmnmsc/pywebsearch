@@ -91,7 +91,7 @@ This project aims to streamline web searching workflows by combining the power o
 Run the main script:
 
 ```bash
-python main.py
+python -m pywebsearch.main
 ```
 
 You can pass search queries directly as command line arguments, e.g.:
