@@ -100,24 +100,43 @@ class SettingsManager:
         self.alias_manager.reset_default_alias()
 
     def set_prefix(self):
-        new_prefix = self.dialogs.get_input(
-            _("Change URL prefix"),
-            _(
-                f"Current symbol: {self.pyweb_app.cmd_prefix}\n\nEnter new prefix to open URLs directly:"
-            ),
-            text=self.pyweb_app.cmd_prefix,
-            select_text=True,
-        )
-        if new_prefix is None or not new_prefix or " " in new_prefix:
-            self.dialogs.show_message_box(
-                _("Invalid prefix. No changes made."),
-                _("Error"),
-                icon=QMessageBox.Icon.Warning,
+        while True:
+            new_prefix = self.dialogs.get_input(
+                _("Change URL prefix"),
+                _(
+                    f"Current symbol: {self.pyweb_app.cmd_prefix}\n\nEnter new prefix to open URLs directly:"
+                ),
+                text=self.pyweb_app.cmd_prefix,
+                select_text=True,
             )
-            return
-        self.config.set_value("cmd_prefix", new_prefix)
-        self.dialogs.show_message_box(_("✅ Prefix updated to: ") + new_prefix)
-        self.reload_config()
+
+            # User cancelled
+            if new_prefix is None:
+                return
+
+            # Validate empty or contains space
+            if not new_prefix or " " in new_prefix:
+                self.dialogs.show_message_box(
+                    _("Invalid prefix. Please try again."),
+                    _("Error"),
+                    icon=QMessageBox.Icon.Warning,
+                )
+                continue
+
+            # Check that it's not the same as alt_cmd_prefix
+            if new_prefix == self.pyweb_app.alt_cmd_prefix:
+                self.dialogs.show_message_box(
+                    _(f"URL prefix cannot be the same as alternative prefix ({self.pyweb_app.alt_cmd_prefix})"),
+                    _("Error"),
+                    icon=QMessageBox.Icon.Warning,
+                )
+                continue
+
+            # Valid prefix, save and exit
+            self.config.set_value("cmd_prefix", new_prefix)
+            self.dialogs.show_message_box(_("✅ Prefix updated to: ") + new_prefix)
+            self.reload_config()
+            break
 
     def set_default_browser(self):
         self.reload_config()
@@ -154,22 +173,44 @@ class SettingsManager:
 
     def set_alt_cmd_prefix(self):
         current = self.pyweb_app.alt_cmd_prefix or "@"
-        new_prefix = self.dialogs.get_input(
-            _("Change alternative command prefix"),
-            _("Enter new symbol to use as alternative command prefix:"),
-            text=current,
-            select_text=True,
-        )
-        if new_prefix is None or not new_prefix or " " in new_prefix:
-            self.dialogs.show_message_box(
-                _("Invalid prefix. No changes made."),
-                _("Error"),
-                icon=QMessageBox.Icon.Warning,
+
+        while True:
+            new_prefix = self.dialogs.get_input(
+                _("Change alternative command prefix"),
+                _("Enter new symbol to use as alternative command prefix:"),
+                text=current,
+                select_text=True,
             )
-            return
-        self.config.set_value("alt_cmd_prefix", new_prefix)
-        self.dialogs.show_message_box(_("✅ Alternative command prefix updated to: ") + new_prefix)
-        self.reload_config()
+
+            # User cancelled
+            if new_prefix is None:
+                return
+
+            # Validate empty or contains space
+            if not new_prefix or " " in new_prefix:
+                self.dialogs.show_message_box(
+                    _("Invalid prefix. Please try again."),
+                    _("Error"),
+                    icon=QMessageBox.Icon.Warning,
+                )
+                current = new_prefix  # Keep what user typed
+                continue
+
+            # Check that it's not the same as cmd_prefix
+            if new_prefix == self.pyweb_app.cmd_prefix:
+                self.dialogs.show_message_box(
+                    _(f"Alternative prefix cannot be the same as URL prefix ({self.pyweb_app.cmd_prefix})"),
+                    _("Error"),
+                    icon=QMessageBox.Icon.Warning,
+                )
+                current = new_prefix  # Keep what user typed
+                continue
+
+            # Valid prefix, save and exit
+            self.config.set_value("alt_cmd_prefix", new_prefix)
+            self.dialogs.show_message_box(_("✅ Alternative command prefix updated to: ") + new_prefix)
+            self.reload_config()
+            break
 
     def backup_config(self):
         options_map = [

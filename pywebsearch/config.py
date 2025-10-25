@@ -40,7 +40,7 @@ class ConfigHandler:
 
     def get_aliases(self):
         aliases = {}
-        config_keys = {"default_alias", "default_browser", "cmd_prefix", "extra_browsers"}
+        config_keys = {"default_alias", "default_browser", "cmd_prefix", "extra_browsers", "alt_browser", "alt_cmd_prefix"}
         for line in self.lines:
             line = line.strip()
             if not line or line.startswith("#") or "=" not in line:
