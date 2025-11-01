@@ -395,9 +395,11 @@ class SettingsManager:
 <tr><td><b>_default</b></td><td>Set default alias</td></tr>
 <tr><td><b>_resetalias</b></td><td>Reset default alias to DuckDuckGo</td></tr>
 <tr><td><b>_defaultbrowser</b></td><td>Set default browser</td></tr>
+<tr><td><b>_altbrowser</b></td><td>Set alternative browser</td></tr>
 <tr><td><b>_history</b></td><td>View recent search history</td></tr>
 <tr><td><b>_clear</b></td><td>Clear history</td></tr>
 <tr><td><b>_prefix</b></td><td>Change symbol for opening URLs directly (e.g., &gt;)</td></tr>
+<tr><td><b>_altprefix</b></td><td>Change symbol for launching the alternative browser (e.g., @)</td></tr>
 <tr><td><b>_backup</b></td><td>Create backup of config and history</td></tr>
 <tr><td><b>_restore</b></td><td>Restore existing backup</td></tr>
 <tr><td><b>_help</b></td><td>Show this help</td></tr>

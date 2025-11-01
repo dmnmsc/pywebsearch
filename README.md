@@ -121,8 +121,10 @@ python main.py '>github.com'
   - `_backup` — create backup of configs and history.
   - `_restore` — restore from backup.
   - `_defaultbrowser` — set default browser command.
+  - `_altbrowser` — set alternative browser command.
   - `_importbrowsers` — import extra browsers with pybrowsers or installed-browsers.
   - `_prefix` — change prefix symbol for opening URLs.
+  - `_altprefix` — change prefix symbol for launching the alternative browser.
   - `_help` — show help information.
   - `_about` — show about information.
   - `_exit` — exit the application.
