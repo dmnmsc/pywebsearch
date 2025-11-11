@@ -24,14 +24,16 @@ from PyQt6.QtWidgets import (
 VERSION = "3.6.1"
 
 # Icon
-if sys.platform.startswith("linux"):
-    from pywebsearch.linux import get_icon
-else:
+if not sys.platform.startswith("linux"):
     from pywebsearch.windows import get_icon
+else:
+    get_icon = None
 
 
 def load_icon():
-    return get_icon()
+    if get_icon is not None:
+        return get_icon()
+    return QIcon()
 
 
 # Locale language

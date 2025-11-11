@@ -5,27 +5,11 @@ import shutil
 import shlex
 import subprocess
 from pywebsearch.platform_base import PlatformHelper
-from PyQt6.QtGui import QIcon
 import re
 from PyQt6.QtCore import Qt
 
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-
-ICON_INSTALLED_SVG = "/usr/share/icons/hicolor/48x48/apps/pywebsearch.svg"
-
-ICON_LOCAL_SVG = os.path.join(script_dir, "resources", "pywebsearch.svg")
-
-ICON_INSTALLED = "/usr/share/icons/hicolor/48x48/apps/pywebsearch.png"
-
-ICON_LOCAL = os.path.join(script_dir, "resources", "pywebsearch.png")
-
-
-def get_icon() -> QIcon:
-    for path in (ICON_INSTALLED_SVG, ICON_INSTALLED, ICON_LOCAL_SVG, ICON_LOCAL):
-        if os.path.exists(path):
-            return QIcon(path)
-    return QIcon()
 
 
 class LinuxHelper(PlatformHelper):
