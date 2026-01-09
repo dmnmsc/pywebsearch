@@ -11,6 +11,7 @@ from pywebsearch.search import PyWebSearchApp
 from pywebsearch.app_settings import SettingsManager
 
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction, QShortcut, QKeySequence, QIcon
 from PyQt6.QtWidgets import (
     QApplication,
@@ -101,6 +102,10 @@ class PyWebSearchUI(QMainWindow):
         self.search_input.returnPressed.connect(self.handle_input)
         main_layout.addWidget(self.search_input)
 
+        self.history_manager = self.settings.history
+        self.history_list = self.history_manager.read_history()
+        self.history_index = -1
+
         main_widget.setLayout(main_layout)
 
         shortcut = QShortcut(QKeySequence("F5"), self)
@@ -148,10 +153,38 @@ class PyWebSearchUI(QMainWindow):
         self.search_input.clear()
 
     def keyPressEvent(self, event):
-        if hasattr(self.settings.pyweb_app.platform_helper, "handle_key_press_event"):
+        # 1. History navigation (Up/Down keys)
+        if event.key() == Qt.Key.Key_Up:
+            if self.history_index < len(self.history_list) - 1:
+                self.history_index += 1
+                self.search_input.setText(self.history_list[~self.history_index])
+            event.accept()
+            return
+
+        if event.key() == Qt.Key.Key_Down:
+            self.history_index -= 1
+            if self.history_index >= 0:
+                self.search_input.setText(self.history_list[~self.history_index])
+            else:
+                self.history_index = -1
+                self.search_input.clear()
+            event.accept()
+            return
+
+        # 2. ESC key logic: Clear text if present, otherwise close app
+        if event.key() == Qt.Key.Key_Escape:
+            if self.search_input.text():
+                self.search_input.clear()
+                self.history_index = -1  # Reset history position when clearing
+                event.accept()
+                return
+
+        # 3. Delegation to platform helper (e.g., closing or minimizing)
+        if hasattr(self.settings.pyweb_app.platform_helper, 'handle_key_press_event'):
             handled = self.settings.pyweb_app.platform_helper.handle_key_press_event(self, event)
             if handled:
                 return
+
         super().keyPressEvent(event)
 
     def closeEvent(self, event):
