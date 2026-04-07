@@ -90,15 +90,13 @@ class PyWebSearchUI(QMainWindow):
             random_site = random.choice(web_sites)
             dynamic_example = f"{self.settings.pyweb_app.cmd_prefix}{random_site}"
 
-        info_text = _(
-            "Explore the web your way! Use bangs, alias or open URLs.\n\n"
-        ) + _(f"🟢 !bang   🔎 alias:query   🌐 >url   ✏️ _help   💡 {dynamic_example}")
+        info_text = _(f"🟢 !bang   🔎 alias:query   🌐 >url   ✏️ _help   💡 {dynamic_example}")
         info_label = QLabel(info_text)
         main_layout.addWidget(info_label)
         main_layout.addStretch()
 
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText(_("🔎 Explore the web your way!"))
+        self.search_input.setPlaceholderText(_("🔎 Search, use bangs, aliases or open URLs"))
         self.search_input.returnPressed.connect(self.handle_input)
         main_layout.addWidget(self.search_input)
 

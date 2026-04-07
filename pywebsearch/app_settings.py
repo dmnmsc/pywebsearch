@@ -369,11 +369,13 @@ class SettingsManager:
     def show_help(self):
         help_text = _(
             """
-🧾 <b>HELP - Using pywebsearch</b>
+🧾 <b>Explore the web your way using PyWebSearch!</b>
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 <pre>
-🔎 <b>SEARCH METHODS:</b>
-
+🔎 <b><i>Normal search:</i> Type any query to search the web.</b>
+    → <i>Example: mechanical keyboard</i>
+    → <i>Example: Linux file search tools</i>
+    
 🟢 <b><i>!bang:</i> Perform quick searches with DuckDuckGo aliases.</b>
     → <i>Example: !w solar energy</i>  (Wikipedia search)
     → <i>Example: !gh pywebsearch</i> (GitHub search)
@@ -382,7 +384,7 @@ class SettingsManager:
     → <i>Example: g:mechanical keyboard</i> (Google search)
     → <i>Example: w:Linux</i> (Wikipedia Search)
 
-🌐 <b><i>url:</i> Open a URL directly in the browser.</b>
+🌐 <b><i>>url:</i> Open a URL directly in your browser.</b>
     → <i>Example: >github.com</i>
     → <i>Example: >es.wikipedia.org/wiki/Bash</i>
 
