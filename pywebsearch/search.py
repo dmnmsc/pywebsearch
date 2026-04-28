@@ -65,11 +65,11 @@ class PyWebSearchApp:
     def open_direct_url(self, url):
         if not re.match(r"^[a-zA-Z]+://", url):
             url = f"https://{url}"
-        self.launch_url(url)
+        self.launch_url(url, browser=self.default_browser)
 
     def duckduckgo_search(self, query):
         url = f"https://duckduckgo.com/?q={quote_plus(query)}"
-        self.launch_url(url)
+        self.launch_url(url, browser=self.default_browser)
 
     def execute_search(self, key, query):
         alias_data = self.aliases.get(key)
