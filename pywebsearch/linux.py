@@ -172,7 +172,7 @@ class LinuxHelper(PlatformHelper):
         except Exception:
             parts = ['xdg-open']
 
-        allowed_browsers = {"chromium", "firefox", "brave", "google-chrome", "chrome", "opera", "safari", "librewolf"}
+        allowed_browsers = {"chromium", "firefox", "brave", "google-chrome", "chrome", "opera", "safari", "io.gitlab.librewolf-community", "librewolf"}
 
         executable = parts[0].lower()
         flags = parts[1:]
