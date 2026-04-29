@@ -109,7 +109,7 @@ class SettingsManager:
                 select_text=True,
             )
 
-            # User cancelled
+            # User canceled
             if new_prefix is None:
                 return
 
@@ -181,7 +181,7 @@ class SettingsManager:
                 select_text=True,
             )
 
-            # User cancelled
+            # User canceled
             if new_prefix is None:
                 return
 

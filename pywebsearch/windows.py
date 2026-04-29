@@ -475,7 +475,7 @@ class WindowsHelper(PlatformHelper):
             event.accept()
             return True
 
-        # Otherwise, hide if not quitting (for ESC, etc)
+        # Otherwise, hide if not quitting (for ESC, etc.)
         if not main_window.is_quitting:
             event.ignore()
             main_window.hide()

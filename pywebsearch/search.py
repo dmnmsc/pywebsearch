@@ -173,7 +173,7 @@ class PyWebSearchApp:
                 self.launch_url(url, browser=self.alt_browser)
             return
 
-        # Si no es alt_cmd_prefix, continuación normal:
+        # If not alt_cmd_prefix, normal continuation:
         if history_manager:
             history_manager.add_entry(input_str)
 
