@@ -15,6 +15,7 @@ from PyQt6.QtWidgets import (
     QRadioButton,
     QVBoxLayout,
     QFileDialog,
+    QTextBrowser,
 )
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.QtCore import QUrl
@@ -258,3 +259,45 @@ class Dialogs:
             ],
             rich_text=False,
         )
+
+    def show_rich_text_dialog(
+            self,
+            title,
+            text,
+            icon=None,
+            buttons_callbacks=None,
+            min_size=(650, 450),
+    ):
+        dialog, layout, btn_box = self._create_base_dialog(
+            title,
+            QDialogButtonBox.StandardButton.Close
+        )
+
+        if icon is not None:
+            dialog.setWindowIcon(icon)
+
+        text_browser = QTextBrowser()
+        text_browser.setOpenLinks(False)
+        text_browser.setOpenExternalLinks(False)
+        text_browser.setHtml(text)
+
+        def handle_link(url):
+            if not url.scheme():
+                url = QUrl.fromLocalFile(url.toString())
+            QDesktopServices.openUrl(url)
+
+        text_browser.anchorClicked.connect(handle_link)
+
+        layout.insertWidget(0, text_browser)
+
+        if buttons_callbacks:
+            for btn_text, callback in buttons_callbacks:
+                self._add_custom_button(
+                    btn_box,
+                    btn_text,
+                    QDialogButtonBox.ButtonRole.ActionRole,
+                    callback,
+                )
+
+        dialog.resize(*min_size)
+        dialog.exec()

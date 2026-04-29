@@ -2,7 +2,6 @@ import os
 import gettext
 import sys
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QMessageBox, QFileDialog
 from pywebsearch.config import ConfigHandler
 from pywebsearch.history import HistoryManager
@@ -375,7 +374,7 @@ class SettingsManager:
 🔎 <b><i>Normal search:</i> Type any query to search the web.</b>
     → <i>Example: mechanical keyboard</i>
     → <i>Example: Linux file search tools</i>
-    
+
 🟢 <b><i>!bang:</i> Perform quick searches with DuckDuckGo aliases.</b>
     → <i>Example: !w solar energy</i>  (Wikipedia search)
     → <i>Example: !gh pywebsearch</i> (GitHub search)
@@ -411,7 +410,7 @@ class SettingsManager:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
         )
-        self.dialogs.show_message_box(help_text)
+        self.dialogs.show_rich_text_dialog(_("Help - PyWebSearch"), help_text)
 
     def about_info(self):
         about_text = _(
@@ -438,17 +437,14 @@ class SettingsManager:
     <a href="https://github.com/dmnmsc/pywebsearch">https://github.com/dmnmsc/pywebsearch</a>
     """
         )
-        msg_box = QMessageBox(
-            QMessageBox.Icon.Information, _("About pywebsearch"), about_text
-        )
+
         from pywebsearch.main import load_icon
-        msg_box.setWindowIcon(QIcon(load_icon()))
-        msg_box.setTextFormat(Qt.TextFormat.RichText)
-        open_button = msg_box.addButton(
-            "🌐 Open website", QMessageBox.ButtonRole.AcceptRole
+        from PyQt6.QtGui import QIcon
+        self.dialogs.show_rich_text_dialog(
+            title=_("About pywebsearch"),
+            text=about_text,
+            icon=QIcon(load_icon()),
+            buttons_callbacks=[
+                (_("🌐 Open website"), lambda: self.pyweb_app.launch_url("https://github.com/dmnmsc/pywebsearch"))
+            ],
         )
-        msg_box.addButton(QMessageBox.StandardButton.Close)
-        msg_box.setDefaultButton(open_button)
-        msg_box.exec()
-        if msg_box.clickedButton() == open_button:
-            self.pyweb_app.launch_url("https://github.com/dmnmsc/pywebsearch")
