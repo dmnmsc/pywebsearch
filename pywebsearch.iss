@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "PyWebSearch"
-#define MyAppVersion "3.6.5"
+#define MyAppVersion "3.6.6"
 #define MyAppPublisher "dmnmsc"
 #define MyAppURL "https://github.com/dmnmsc/pywebsearch"
 #define MyAppExeName "pywebsearch.exe"
