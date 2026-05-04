@@ -1,0 +1,30 @@
+app-id: com.github.dmnmsc.pywebsearch
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+command: pywebsearch
+
+finish-args:
+  - --share=network
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --talk-name=org.freedesktop.portal.Desktop
+
+modules:
+  - name: pywebsearch
+    buildsystem: simple
+    build-options:
+      build-args:
+        - --share=network
+    build-commands:
+      - pip3 install --verbose --no-index --find-links . --prefix=${FLATPAK_DEST} .
+    sources:
+      - type: git
+        url: https://github.com/dmnmsc/pywebsearch.git
+        tag: ''
+    post-install:
+      - install -Dm644 com.github.dmnmsc.pywebsearch.desktop /app/share/applications/com.github.dmnmsc.pywebsearch.desktop
+      - install -Dm644 com.github.dmnmsc.pywebsearch.appdata.xml /app/share/metainfo/com.github.dmnmsc.pywebsearch.appdata.xml
+      - install -Dm644 icons/pywebsearch.svg /app/share/icons/hicolor/scalable/apps/com.github.dmnmsc.pywebsearch.svg
