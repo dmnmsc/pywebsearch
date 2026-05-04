@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=PyWebSearch
+Exec=pywebsearch
+Icon=com.github.dmnmsc.pywebsearch
+Categories=Utility;
+Comment=Customizable web search tool with aliases, !bangs and GUI
+Keywords=search;web;browser;
+Terminal=false
+StartupNotify=true
