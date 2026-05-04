@@ -26,7 +26,9 @@ class HistoryManager:
             return
         with open(self.history_file, "a", encoding="utf-8") as f:
             f.write(entry + "\n")
+            self._cache = None  # Disable cache
 
     def clear_history(self):
         with open(self.history_file, "w", encoding="utf-8") as f:
             f.truncate()
+            self._cache = None  # Disable cache

@@ -147,6 +147,9 @@ class PyWebSearchUI(QMainWindow):
             commands[user_input]()
         else:
             self.app.process_search(user_input, history_manager=self.settings.history)
+            # History reload
+            self.history_list = self.history_manager.read_history()
+            self.history_index = -1
 
         self.search_input.clear()
 
