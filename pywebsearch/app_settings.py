@@ -368,46 +368,60 @@ class SettingsManager:
     def show_help(self):
         help_text = _(
             """
-🧾 <b>Explore the web your way using PyWebSearch!</b>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 <pre>
-🔎 <b><i>Normal search:</i> Type any query to search the web.</b>
-    → <i>Example: mechanical keyboard</i>
-    → <i>Example: Linux file search tools</i>
 
-🟢 <b><i>!bang:</i> Perform quick searches with DuckDuckGo aliases.</b>
-    → <i>Example: !w solar energy</i>  (Wikipedia search)
-    → <i>Example: !gh pywebsearch</i> (GitHub search)
 
-🔎 <b><i>alias:query:</i> Use custom aliases defined by you.</b>
-    → <i>Example: g:mechanical keyboard</i> (Google search)
-    → <i>Example: w:Linux</i> (Wikipedia Search)
+🔎 <b>Normal search:</b> Type any query to search the web.
+   Example: <code>mechanical keyboard</code>
+   Example: <code>Linux file search tools</code>
 
-🌐 <b><i>>url:</i> Open a URL directly in your browser.</b>
-    → <i>Example: >github.com</i>
-    → <i>Example: >es.wikipedia.org/wiki/Bash</i>
+🟢 <b>!bang:</b> Perform quick searches with DuckDuckGo aliases.
+   Example: <code>!w solar energy</code>  — Wikipedia search
+   Example: <code>!gh pywebsearch</code> — GitHub search
 
-<b>✏️ Internal commands (type in the prompt):</b><br>
-<table border="1" cellspacing="0" cellpadding="4">
+🔎 <b>alias:query:</b> Use your custom aliases.
+   Example: <code>g:mechanical keyboard</code> — Google search
+   Example: <code>w:Linux</code> — Wikipedia search
+
+🌐 <b>>url:</b> Open a URL directly in your browser.
+   Example: <code>>github.com</code>
+   Example: <code>>es.wikipedia.org/wiki/Bash</code>
+</pre>
+
+<br>
+<table border="1" cellspacing="0" cellpadding="4" width="100%">
+<tr>
+  <td align="center">✏️ You can also use built-in commands as shortcuts</td>
+</tr>
+</table>
+
+<table border="1" cellspacing="0" cellpadding="4" width="100%">
 <tr><th>Command</th><th>Description</th></tr>
 <tr><td><b>_alias</b></td><td>Select alias for searching</td></tr>
-<tr><td><b>_newalias</b></td><td>Create new alias</td></tr>
-<tr><td><b>_edit</b></td><td>Edit alias file manually</td></tr>
-<tr><td><b>_default</b></td><td>Set default alias</td></tr>
-<tr><td><b>_resetalias</b></td><td>Reset default alias to DuckDuckGo</td></tr>
-<tr><td><b>_defaultbrowser</b></td><td>Set default browser</td></tr>
-<tr><td><b>_altbrowser</b></td><td>Set alternative browser</td></tr>
+<tr><td><b>_newalias</b></td><td>Create a new alias</td></tr>
+<tr><td><b>_edit</b></td><td>Edit the alias file manually</td></tr>
+<tr><td><b>_default</b></td><td>Set the default alias</td></tr>
+<tr><td><b>_resetalias</b></td><td>Reset the default alias to DuckDuckGo</td></tr>
+<tr><td><b>_defaultbrowser</b></td><td>Set the default browser</td></tr>
+<tr><td><b>_altbrowser</b></td><td>Set the alternative browser</td></tr>
 <tr><td><b>_history</b></td><td>View recent search history</td></tr>
 <tr><td><b>_clear</b></td><td>Clear history</td></tr>
-<tr><td><b>_prefix</b></td><td>Change symbol for opening URLs directly (e.g., &gt;)</td></tr>
-<tr><td><b>_altprefix</b></td><td>Change symbol for launching the alternative browser (e.g., @)</td></tr>
-<tr><td><b>_backup</b></td><td>Create backup of config and history</td></tr>
-<tr><td><b>_restore</b></td><td>Restore existing backup</td></tr>
+<tr><td><b>_prefix</b></td><td>Change the symbol for opening URLs directly</td></tr>
+<tr><td><b>_altprefix</b></td><td>Change the symbol for launching the alternative browser</td></tr>
+<tr><td><b>_backup</b></td><td>Create a backup of config and history</td></tr>
+<tr><td><b>_restore</b></td><td>Restore an existing backup</td></tr>
 <tr><td><b>_help</b></td><td>Show this help</td></tr>
-<tr><td><b>_about</b></td><td>About pywebsearch</td></tr>
+<tr><td><b>_about</b></td><td>About PyWebSearch</td></tr>
 <tr><td><b>_exit</b></td><td>Exit the program</td></tr>
 </table>
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+<br>
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+  <td align="center"><b>🌐 Explore the web your way with PyWebSearch!</b></td>
+</tr>
+</table>
+
 """
         )
         self.dialogs.show_rich_text_dialog(_("Help - PyWebSearch"), help_text)
@@ -430,8 +444,8 @@ class SettingsManager:
     • <b>Search history:</b><br>
     <a href="file://{self.hist_path}">{self.hist_path}</a><br><br>
     🎨 <b>Icon credits:</b><br>
-    <a href="https://www.svgrepo.com/svg/522651/search-globe">Search Globe SVG Vector 2</a> by 
-    <a href="https://www.svgrepo.com/author/Vlad%20Cristea/">Vlad Cristea</a>
+    <a href="https://www.svgrepo.com/svg/522651/search-globe">Search Globe SVG Vector 2</a> by
+    <a href="https://www.svgrepo.com/author/Vlad%20Cristea/"> Vlad Cristea</a>
     distributed under <a href="https://www.svgrepo.com/page/licensing/#CC%20Attribution">CC Attribution License</a><br><br>
     🔗 <b>More info and source code:</b><br>
     <a href="https://github.com/dmnmsc/pywebsearch">https://github.com/dmnmsc/pywebsearch</a>
