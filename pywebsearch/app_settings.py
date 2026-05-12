@@ -386,9 +386,10 @@ class SettingsManager:
 🌐 <b>>url:</b> Open a URL directly in your browser.
    Example: <code>>github.com</code>
    Example: <code>>es.wikipedia.org/wiki/Bash</code>
+
+
 </pre>
 
-<br>
 <table border="1" cellspacing="0" cellpadding="4" width="100%">
 <tr>
   <td align="center">✏️ You can also use built-in commands as shortcuts</td>
