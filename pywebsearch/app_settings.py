@@ -429,8 +429,16 @@ class SettingsManager:
 
     def about_info(self):
         about_text = _(
-            f"""<h2 style="color:#2E86C1;">🛠️ pywebsearch <span style="font-size:22px; font-weight:bold; padding:3px 6px; border-radius:4px;">v{self.version}</span></h2>
-    <br>
+            f"""<div style="text-align:center;">
+                        <h2 style="margin-bottom: 0px;">🛠️ Pywebsearch</h2>
+                        <a href="https://github.com/dmnmsc/pywebsearch/releases/tag/v{self.version}" style="text-decoration: none;">
+                            <span style="font-weight: bold;
+                                          padding: 2px 8px; border-radius: 12px; vertical-align: middle;">
+                                v{self.version}
+                            </span>
+                        </a>
+                    </div>
+                    <br>
     📌 <b>What is pywebsearch?</b><br>
     A simple and practical tool to perform fast searches and open web pages using customizable aliases and !bangs, with a user-friendly GUI.<br><br>
     ⭐ <b>Main features:</b><br>
@@ -456,7 +464,7 @@ class SettingsManager:
         from pywebsearch.main import load_icon
         from PyQt6.QtGui import QIcon
         self.dialogs.show_rich_text_dialog(
-            title=_("About pywebsearch"),
+            title=_("About"),
             text=about_text,
             icon=QIcon(load_icon()),
             buttons_callbacks=[
