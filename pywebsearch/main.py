@@ -93,7 +93,7 @@ class PyWebSearchUI(QMainWindow):
         info_text = _(f"🟢 !bang   🔎 alias:query   🌐 >url   ✏️ _help   💡 {dynamic_example}")
         info_label = QLabel(info_text)
         main_layout.addWidget(info_label)
-        main_layout.addStretch()
+        #main_layout.addStretch()
 
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText(_("🔎 Search, use bangs, aliases or open URLs"))
